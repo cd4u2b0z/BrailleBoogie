@@ -50,15 +50,22 @@ static float rhythm_onset_strength = 0.0f;
 static int pixel_width = 0;
 static int pixel_height = 0;
 
+/* Ground and shadow (reflection) settings */
+static bool show_ground = false;
+static bool show_shadow = false;
+
+/* Ground position */
+static int ground_y = 0;  /* Pixel y-coordinate of ground line */
+
 /* Convert joint normalized coords (0-1) to pixel coords */
 static inline float joint_to_pixel_x(float x) {
     /* Joint x is 0-1 centered at 0.5, convert to pixel coords */
-    return (x - 0.5f) * (pixel_width * 0.8f) + (pixel_width / 2.0f);
+    return (x - 0.5f) * (pixel_width * 0.75f) + (pixel_width / 2.0f);
 }
 
 static inline float joint_to_pixel_y(float y) {
-    /* Joint y is 0-1 from top, convert to pixel coords */
-    return y * (pixel_height * 0.8f) + (pixel_height * 0.1f);
+    /* Joint y is 0-1 from top, convert to pixel coords with headroom */
+    return y * (pixel_height * 0.70f) + (pixel_height * 0.18f);
 }
 
 int dancer_load_frames(void) {
@@ -81,6 +88,9 @@ int dancer_load_frames(void) {
     pixel_width = CANVAS_CELLS_W * 2;   /* 2 pixels per cell width */
     pixel_height = CANVAS_CELLS_H * 4;  /* 4 pixels per cell height */
     effects = effects_create(pixel_width, pixel_height);
+    
+    /* Ground line is at the bottom of the canvas */
+    ground_y = pixel_height - 3;
     
     initialized = 1;
     return 1;
@@ -200,6 +210,75 @@ void dancer_compose_frame(struct dancer_state *state, char *output) {
         trails_render(effects->trails, canvas);
     }
     
+    /* Render ground line (before dancer so it's behind) */
+    if (show_ground) {
+        for (int x = 0; x < pixel_width; x++) {
+            braille_set_pixel(canvas, x, ground_y, true);
+        }
+    }
+    
+    /* Render shadow/reflection (mirrored silhouette below ground) */
+    if (show_shadow && skeleton) {
+        const Joint *joints = skeleton_dancer_get_joints(skeleton);
+        if (joints) {
+            /* Draw connecting lines for shadow silhouette */
+            /* Body connections - create a proper shadow shape */
+            int shadow_pairs[][2] = {
+                {0, 1},   /* Head to neck */
+                {1, 2},   /* Neck to hip center */
+                {1, 3}, {1, 4},   /* Neck to shoulders */
+                {3, 5}, {4, 6},   /* Shoulders to elbows */
+                {5, 7}, {6, 8},   /* Elbows to hands */
+                {2, 9}, {2, 10},  /* Hips to knees */
+                {9, 11}, {10, 12} /* Knees to feet */
+            };
+            int num_pairs = sizeof(shadow_pairs) / sizeof(shadow_pairs[0]);
+            
+            for (int p = 0; p < num_pairs; p++) {
+                int i1 = shadow_pairs[p][0];
+                int i2 = shadow_pairs[p][1];
+                
+                float px1 = joint_to_pixel_x(joints[i1].x);
+                float py1 = joint_to_pixel_y(joints[i1].y);
+                float px2 = joint_to_pixel_x(joints[i2].x);
+                float py2 = joint_to_pixel_y(joints[i2].y);
+                
+                /* Mirror y across ground line with perspective squash */
+                float dist1 = ground_y - py1;
+                float dist2 = ground_y - py2;
+                float mirror_y1 = ground_y + dist1 * 0.40f;  /* Squashed reflection */
+                float mirror_y2 = ground_y + dist2 * 0.40f;
+                
+                /* Draw shadow line with thickness */
+                if (mirror_y1 > ground_y && mirror_y1 < pixel_height &&
+                    mirror_y2 > ground_y && mirror_y2 < pixel_height) {
+                    /* Main line */
+                    braille_draw_line(canvas, (int)px1, (int)mirror_y1,
+                                     (int)px2, (int)mirror_y2);
+                    /* Thicker line - offset by 1 */
+                    braille_draw_line(canvas, (int)px1 + 1, (int)mirror_y1,
+                                     (int)px2 + 1, (int)mirror_y2);
+                }
+            }
+            
+            /* Draw shadow head (larger blob for visibility) */
+            float head_x = joint_to_pixel_x(joints[0].x);
+            float head_y = joint_to_pixel_y(joints[0].y);
+            float head_mirror_y = ground_y + (ground_y - head_y) * 0.40f;
+            if (head_mirror_y > ground_y && head_mirror_y < pixel_height - 3) {
+                /* Small circle for head shadow */
+                for (int dy = -1; dy <= 1; dy++) {
+                    for (int dx = -2; dx <= 2; dx++) {
+                        if (dx*dx + dy*dy <= 4) {  /* Circle of radius ~2 */
+                            braille_set_pixel(canvas, (int)head_x + dx, 
+                                            (int)head_mirror_y + dy, true);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     /* Render skeleton to braille canvas */
     skeleton_dancer_render(skeleton, canvas);
     
@@ -245,6 +324,37 @@ bool dancer_get_trails(void) {
 
 bool dancer_get_breathing(void) {
     return effects ? effects_breathing_enabled(effects) : false;
+}
+
+/* Ground and shadow (reflection) controls */
+void dancer_set_ground(bool enabled) {
+    show_ground = enabled;
+}
+
+void dancer_set_shadow(bool enabled) {
+    show_shadow = enabled;
+}
+
+bool dancer_get_ground(void) {
+    return show_ground;
+}
+
+bool dancer_get_shadow(void) {
+    return show_shadow;
+}
+
+/* Visualizer removed - stubs for compatibility */
+void dancer_set_visualizer(bool enabled) {
+    (void)enabled;
+}
+
+bool dancer_get_visualizer(void) {
+    return false;
+}
+
+void dancer_update_spectrum(float *spectrum, int num_bars) {
+    (void)spectrum;
+    (void)num_bars;
 }
 
 int dancer_get_particle_count(void) {
@@ -312,14 +422,16 @@ void dancer_update_with_rhythm(struct dancer_state *state,
     rhythm_onset = onset_detected;
     rhythm_onset_strength = onset_strength;
     
-    /* Smooth audio input */
+    /* Calculate dt (approximately 60fps = 0.0167s) */
+    float dt = 0.0167f;
+    
+    /* Note: visualizer is now updated separately via dancer_update_spectrum() */
+    
+    /* Smooth audio input for dancer (separate from visualizer) */
     double smooth = 0.88;
     state->bass_intensity = state->bass_intensity * smooth + bass * (1.0 - smooth);
     state->mid_intensity = state->mid_intensity * smooth + mid * (1.0 - smooth);
     state->treble_intensity = state->treble_intensity * smooth + treble * (1.0 - smooth);
-    
-    /* Calculate dt (approximately 60fps = 0.0167s) */
-    float dt = 0.0167f;
     
     /* Track bass/treble velocity for transient detection */
     bass_velocity = (float)state->bass_intensity - last_bass;
@@ -379,11 +491,40 @@ void dancer_update_with_rhythm(struct dancer_state *state,
     
     /* Beat phase pulse - small burst near beat (phase close to 0) */
     static float last_phase = 0;
-    if (effects && energy > 0.2f && beat_phase < 0.1f && last_phase > 0.9f) {
+    static float note_timer = 0;
+    note_timer += dt;
+    
+    if (effects && energy > 0.15f && beat_phase < 0.1f && last_phase > 0.9f) {
         float center_x = skeleton->current[JOINT_HIP_CENTER].x;
         float center_y = skeleton->current[JOINT_HIP_CENTER].y;
         effects_on_beat(effects, energy * 0.7f,
                        joint_to_pixel_x(center_x), joint_to_pixel_y(center_y));
+        
+        /* Spawn music notes on beats! Lower threshold, more frequent */
+        if (effects->particles && energy > 0.25f && note_timer > 0.3f) {
+            note_timer = 0;
+            /* Spawn from head area - randomize position */
+            float head_x = skeleton->current[JOINT_HEAD].x;
+            float head_y = skeleton->current[JOINT_HEAD].y;
+            int offset_x = (rand() % 30) - 15;
+            particles_emit_music_notes(effects->particles,
+                                       joint_to_pixel_x(head_x) + offset_x,
+                                       joint_to_pixel_y(head_y) - 3,
+                                       energy * 1.5f);  /* Boost intensity */
+        }
+    }
+    
+    /* Also spawn notes on half-beats at high energy */
+    if (effects && effects->particles && energy > 0.5f && 
+        beat_phase > 0.45f && beat_phase < 0.55f && note_timer > 0.2f) {
+        note_timer = 0;
+        float hand_x = (rand() % 2 == 0) ? 
+            skeleton->current[JOINT_HAND_L].x : skeleton->current[JOINT_HAND_R].x;
+        float hand_y = skeleton->current[JOINT_HAND_L].y;
+        particles_emit_music_notes(effects->particles,
+                                   joint_to_pixel_x(hand_x),
+                                   joint_to_pixel_y(hand_y),
+                                   energy);
     }
     last_phase = beat_phase;
     
@@ -453,4 +594,54 @@ float dancer_get_beat_phase(void) {
 
 float dancer_get_bpm(void) {
     return current_bpm;
+}
+
+/* ============ v3.1: Energy Override System ============ */
+
+void dancer_adjust_energy(float amount) {
+    if (skeleton) {
+        skeleton_dancer_adjust_energy(skeleton, amount);
+    }
+}
+
+void dancer_toggle_energy_lock(void) {
+    if (skeleton) {
+        skeleton_dancer_toggle_energy_lock(skeleton);
+    }
+}
+
+float dancer_get_effective_energy(void) {
+    if (skeleton) {
+        return skeleton_dancer_get_effective_energy(skeleton);
+    }
+    return 0.5f;
+}
+
+bool dancer_is_energy_locked(void) {
+    if (skeleton) {
+        return skeleton_dancer_is_energy_locked(skeleton);
+    }
+    return false;
+}
+
+float dancer_get_energy_override(void) {
+    if (skeleton) {
+        return skeleton_dancer_get_energy_override(skeleton);
+    }
+    return 0.0f;
+}
+
+/* ============ v3.1: Spin Control ============ */
+
+void dancer_trigger_spin(int direction) {
+    if (skeleton) {
+        skeleton_dancer_trigger_spin(skeleton, direction);
+    }
+}
+
+float dancer_get_facing(void) {
+    if (skeleton) {
+        return skeleton_dancer_get_facing(skeleton);
+    }
+    return 0.0f;
 }

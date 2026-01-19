@@ -9,6 +9,7 @@
 #include <time.h>
 #include <getopt.h>
 #include <pthread.h>
+#include <math.h>
 
 #include "audio/audio.h"
 #include "fft/cavacore.h"
@@ -319,7 +320,7 @@ int main(int argc, char *argv[]) {
     // Background FX needs particle system - get from dancer
     ParticleSystem *particles = dancer_get_particle_system();
     BackgroundFX *bg_fx = background_fx_create(particles);
-    BackgroundFXType current_bg_effect = BG_NONE;
+    BackgroundFXType current_bg_effect = BG_AMBIENT_FIELD;  // Match bg_fx default
     bool bg_fx_enabled = false;
 
     // v3.0+ modules (initialized after ncurses)
@@ -345,6 +346,8 @@ int main(int argc, char *argv[]) {
     render_set_theme(cfg.theme);
     render_set_ground(show_ground);
     render_set_shadow(show_shadow);
+    dancer_set_ground(show_ground);   // Braille dancer ground
+    dancer_set_shadow(show_shadow);   // Braille dancer shadow
 
     // Initialize v3.0+ modules (needs ncurses for screen size)
     int sw, sh;
@@ -400,6 +403,9 @@ int main(int argc, char *argv[]) {
         for (int i = 0; i < NUM_BARS; i++) {
             spectrum[i] = (float)cava_out[i];
         }
+        
+        // Update visualizer with raw spectrum (cava-style)
+        dancer_update_spectrum(spectrum, NUM_BARS);
 
         // Mark audio time
         if (show_profiler) {
@@ -486,8 +492,10 @@ int main(int argc, char *argv[]) {
         // v3.0: Enhanced info display with confidence and energy zone
         const char *zone_name = energy_analyzer_get_zone_name(energy);
         float bpm_conf = bpm_tracker_get_confidence(bpm_tracker);
+        float energy_ovr = dancer_get_energy_override();
+        bool energy_locked = dancer_is_energy_locked();
         snprintf(info_text, sizeof(info_text),
-                 "%.0fbpm(%d%%) %s %s %s%s%s%s%s%s%s%s p:%d",
+                 "%.0fbpm(%d%%) %s %s%s%s%s%s%s%s%s%s%s p:%d",
                  bpm_tracker_get_bpm(bpm_tracker),
                  (int)(bpm_conf * 100),
                  zone_name,
@@ -500,6 +508,8 @@ int main(int argc, char *argv[]) {
                  bg_fx_enabled ? "[FX]" : "",
                  bg_fx_enabled ? effect_names[current_bg_effect] : "",
                  recording ? "[REC]" : "",
+                 energy_locked ? "[LOCK]" : (fabsf(energy_ovr) > 0.05f ? 
+                     (energy_ovr > 0 ? "[+E]" : "[-E]") : ""),
                  dancer_get_particle_count());
         render_info(info_text);
         
@@ -532,13 +542,28 @@ int main(int argc, char *argv[]) {
             break;
         case '+':
         case '=':
-            sensitivity *= 1.2;
-            if (sensitivity > 10.0) sensitivity = 10.0;
+        case KEY_UP:  // Up arrow - increase energy
+            // v3.1: Increase dancer energy
+            dancer_adjust_energy(0.25f);
             break;
         case '-':
         case '_':
-            sensitivity /= 1.2;
-            if (sensitivity < 0.1) sensitivity = 0.1;
+        case KEY_DOWN:  // Down arrow - decrease energy
+            // v3.1: Decrease dancer energy
+            dancer_adjust_energy(-0.25f);
+            break;
+        case 'l':
+        case 'L':
+            // v3.1: Toggle energy lock (ignore audio)
+            dancer_toggle_energy_lock();
+            break;
+        case '[':
+            // v3.1: Trigger counter-clockwise spin
+            dancer_trigger_spin(-1);
+            break;
+        case ']':
+            // v3.1: Trigger clockwise spin
+            dancer_trigger_spin(1);
             break;
         case 't':
         case 'T':
@@ -548,11 +573,13 @@ int main(int argc, char *argv[]) {
         case 'G':
             show_ground = !show_ground;
             render_set_ground(show_ground);
+            dancer_set_ground(show_ground);  // Braille dancer ground
             break;
         case 'r':
         case 'R':
             show_shadow = !show_shadow;
             render_set_shadow(show_shadow);
+            dancer_set_shadow(show_shadow);  // Braille dancer shadow
             break;
         case 'p':
         case 'P':
@@ -601,6 +628,11 @@ int main(int argc, char *argv[]) {
         case 'I':
             // v3.0+: Toggle profiler
             show_profiler = !show_profiler;
+            break;
+        case 'v':
+        case 'V':
+            // Toggle audio visualizer bars
+            dancer_set_visualizer(!dancer_get_visualizer());
             break;
         case 'd':
         case 'D':

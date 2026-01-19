@@ -104,15 +104,15 @@ BackgroundFX* background_fx_create(ParticleSystem *particles) {
     fx->particles = particles;
     fx->type = BG_AMBIENT_FIELD;
     fx->enabled = true;
-    fx->intensity = 0.5f;
+    fx->intensity = 0.8f;
     fx->speed = 1.0f;
     
-    /* Initialize defaults */
-    fx->ambient.particle_count = 20;
-    fx->ambient.drift_speed = 1.0f;
-    fx->ambient.twinkle_rate = 2.0f;
+    /* Initialize defaults - increased for visibility */
+    fx->ambient.particle_count = 50;
+    fx->ambient.drift_speed = 2.0f;
+    fx->ambient.twinkle_rate = 15.0f;  /* 15 particles/sec */
     
-    fx->spectral.wave_speed = 0.5f;
+    fx->spectral.wave_speed = 0.8f;
     fx->spectral.active_waves = 0;
     
     fx->aura.radius = 20.0f;

@@ -50,3 +50,23 @@ float dancer_get_bpm(void);
 // v3.0: Get particle system for background effects
 #include "effects/particles.h"
 ParticleSystem* dancer_get_particle_system(void);
+
+// Ground and shadow control (v3.0)
+void dancer_set_ground(bool enabled);
+void dancer_set_shadow(bool enabled);
+bool dancer_get_ground(void);
+bool dancer_get_shadow(void);
+
+// v3.1: Energy Override System
+void dancer_adjust_energy(float amount);
+void dancer_toggle_energy_lock(void);
+float dancer_get_effective_energy(void);
+bool dancer_is_energy_locked(void);
+float dancer_get_energy_override(void);
+
+// v3.1: Spin and Facing Control
+void dancer_trigger_spin(int direction);  // 1=clockwise, -1=counter-clockwise
+float dancer_get_facing(void);
+void dancer_set_visualizer(bool enabled);
+bool dancer_get_visualizer(void);
+void dancer_update_spectrum(float *spectrum, int num_bars);

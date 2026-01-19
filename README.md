@@ -1,18 +1,18 @@
 <- {motion} = {motion} = Original work by Dr. Baklava • github.com/cd4u2b0z • 2026 -->
 
-#  ASCII Dancer v3.0
+#  ASCII Dancer v3.2
 
 **A terminal-based audio visualizer with a dancing Unicode Braille character that reacts to music in real-time.**
 
 > ⚠️ **Early Development** — This project is in its infancy and may contain bugs. Contributions, bug reports, and feedback are welcome!
 
-**Latest:** Advanced BPM tracking • Dynamic energy analysis • 7 spectacular background effects
+**Latest:** 228 base poses • Genre-specific dance styles • Moonwalk, ballet, breakdance, and more
 
 ![Linux](https://img.shields.io/badge/Linux-FCC624?style=flat&logo=linux&logoColor=black)
 ![C](https://img.shields.io/badge/C-A8B9CC?style=flat&logo=c&logoColor=black)
 ![PipeWire](https://img.shields.io/badge/PipeWire-4A86CF?style=flat&logo=linux&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat)
-![Version](https://img.shields.io/badge/Version-3.0.1-blue?style=flat)
+![Version](https://img.shields.io/badge/Version-3.2.0-blue?style=flat)
 
 ```
     ⠀⣀⣀⠀
@@ -33,7 +33,7 @@
 
 ###  Audio-Reactive Animation
 - **Real-time frequency analysis** via FFTW3
-- **36 unique poses** across 7 energy categories
+- **228 base poses** across 13 categories (~1,190 with procedural variations)
 - **Physics-based animation** with spring-damper joint system
 
 ###  Frequency-Specific Movement
@@ -43,20 +43,26 @@
 |  **Mids** | 300-2kHz | Torso, head bob, bounce |
 |  **Treble** | 2kHz+ | Arms, hands, flourishes |
 
-###  Visual Effects (v2.2)
+###  Visual Effects
 | Effect | Key | Description |
 |--------|-----|-------------|
 |  **Particles** | `p` | Sparks shoot from feet on bass hits |
 |  **Trails** | `m` | Ghost afterimages follow limb movement |
 |  **Breathing** | `b` | Subtle idle animation |
 
-###  Style Detection
-Automatic genre detection adapts the dancer's style:
--  **Electronic/EDM** — Precise, mechanical movements
--  **Rock** — Aggressive, energetic poses
--  **Hip-Hop** — Smooth, flowing transitions
--  **Ambient** — Gentle swaying
--  **Classical** — Graceful, measured gestures
+###  Genre Detection & Easter Eggs (v3.2)
+Automatic genre detection adapts the dancer's style and triggers special moves:
+
+| Genre | Detection | Easter Egg Moves |
+|-------|-----------|------------------|
+|  **Electronic/EDM** | High treble, fast BPM | Robot poses (locks, isolations) |
+|  **Hip-Hop** | Strong bass, mid-tempo | Moonwalk slides, breakdance freezes |
+|  **Rock** | High energy, guitar range | Headbanging, power stances |
+|  **Classical** | Low energy, balanced | Ballet positions, waltz frames |
+|  **Pop** | Balanced energy, steady beat | Moonwalk, smooth transitions |
+|  **Ambient** | Very low energy | Gentle swaying |
+
+Easter egg moves trigger randomly (~15% chance) when a genre is detected.
 
 ###  Smart Animation System
 - **Beat detection** with BPM estimation
@@ -64,7 +70,17 @@ Automatic genre detection adapts the dancer's style:
 - **Smooth interpolation** via easing functions
 - **Momentum** and follow-through physics
 
-###  v3.0 Audio Analysis
+###  v3.2 Dance Styles
+| Style | Poses | Description |
+|-------|-------|-------------|
+| 🚶 **Moonwalk** | 4 | Smooth backward slides, toe stands |
+| 🩰 **Ballet** | 5 | First position, arabesque, plié, relevé |
+| 🤸 **Breakdance** | 4 | Toprocks, freezes, power prep |
+| 💃 **Waltz** | 4 | Frames, turns, rises, sways |
+| 🤖 **Robot** | 5 | Locks, extensions, isolations |
+| 🎸 **Headbang** | 4 | Down strokes, horns up, power stance |
+
+###  Audio Analysis
 | Feature | Description |
 |---------|-------------|
 | 🎯 **BPM Tracker** | Multi-tap tempo averaging with confidence + stability |
@@ -286,6 +302,12 @@ Unicode Braille (U+2800–U+28FF) provides **2×4 subpixel resolution**:
 |  **INTENSE** | 6 | Energy > 0.75 |
 |  **BASS_HIT** | 4 | Strong bass transient |
 |  **TREBLE_ACCENT** | 4 | High treble spike |
+| 🚶 **MOONWALK** | 4 | Hip-hop/Pop genre detected |
+| 🩰 **BALLET** | 5 | Classical genre detected |
+| 🤸 **BREAKDANCE** | 4 | Hip-hop genre detected |
+| 💃 **WALTZ** | 4 | Classical genre detected |
+| 🤖 **ROBOT** | 5 | Electronic genre detected |
+| 🎸 **HEADBANG** | 4 | Rock genre detected |
 
 ---
 
@@ -306,7 +328,7 @@ asciidancer/
 │   ├  braille/
 │   │   ├  braille_canvas.c # Pixel-to-braille conversion
 │   │   ├  braille_dancer.c # Dancer integration
-│   │   └  skeleton_dancer.c # Physics & poses
+│   │   └  skeleton_dancer.c # Physics & poses (v3.2: 228 poses)
 │   ├  effects/
 │   │   ├  particles.c     # Particle system
 │   │   ├  trails.c        # Motion trails
@@ -326,6 +348,9 @@ asciidancer/
 │   │   └  colors.c        # 256-color themes
 │   ├  config/
 │   │   └  config.c        # INI config parser
+│   ├  dancer/
+│   │   ├  dancer.h        # Dancer API
+│   │   └  legacy/         # v3.2: Archived legacy code
 │   └  fft/
 │       └  cavacore.c      # FFT processing
 ├  docs/

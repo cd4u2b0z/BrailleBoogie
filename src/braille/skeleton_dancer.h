@@ -2,7 +2,7 @@
  * Advanced Skeleton Dancer - Rich animation with audio-reactive behavior
  * 
  * Features:
- * - 30+ poses across different energy levels
+ * - 1000+ poses across different energy levels
  * - Frequency-specific reactions (bass = lower body, treble = arms/hands)
  * - Beat detection for rhythmic movement
  * - Genre-aware animation styles
@@ -18,8 +18,8 @@
 
 #define MAX_JOINTS 16
 #define MAX_BONES 20
-#define MAX_POSES 64
-#define POSE_HISTORY 8
+#define MAX_POSES 1200
+#define POSE_HISTORY 24
 
 /* Joint IDs for humanoid skeleton */
 typedef enum {
@@ -50,17 +50,27 @@ typedef enum {
     POSE_CAT_INTENSE,       /* Very high energy, jumping/wild */
     POSE_CAT_BASS_HIT,      /* Reactive to bass hits */
     POSE_CAT_TREBLE_ACCENT, /* Reactive to treble/hi-hats */
+    POSE_CAT_SPIN,          /* v3.1: Spinning moves */
+    POSE_CAT_DIP,           /* v3.1: Dips and drops */
+    /* v3.2: Genre-specific easter egg categories */
+    POSE_CAT_MOONWALK,      /* Michael Jackson style glide */
+    POSE_CAT_BALLET,        /* Classical ballet poses */
+    POSE_CAT_BREAKDANCE,    /* Hip-hop breaking moves */
+    POSE_CAT_WALTZ,         /* Classical ballroom */
+    POSE_CAT_ROBOT,         /* Electronic/techno robotic */
+    POSE_CAT_HEADBANG,      /* Rock/metal headbanging */
     POSE_CAT_COUNT
 } PoseCategory;
 
 /* Detected music style hints */
 typedef enum {
     STYLE_UNKNOWN = 0,
-    STYLE_ELECTRONIC,   /* Heavy bass, repetitive */
-    STYLE_ROCK,         /* Balanced, driving */
-    STYLE_HIPHOP,       /* Strong bass, rhythmic */
+    STYLE_ELECTRONIC,   /* Heavy bass, repetitive - triggers ROBOT */
+    STYLE_ROCK,         /* Balanced, driving - triggers HEADBANG */
+    STYLE_HIPHOP,       /* Strong bass, rhythmic - triggers BREAKDANCE, MOONWALK */
     STYLE_AMBIENT,      /* Low energy, flowing */
-    STYLE_CLASSICAL,    /* Dynamic range, melodic */
+    STYLE_CLASSICAL,    /* Dynamic range, melodic - triggers BALLET, WALTZ */
+    STYLE_POP,          /* v3.2: Catchy, mid-tempo - triggers MOONWALK */
     STYLE_COUNT
 } MusicStyle;
 
@@ -88,6 +98,8 @@ typedef struct {
     float energy_max;       /* Maximum energy for this pose */
     float bass_affinity;    /* How much this pose suits bass-heavy music */
     float treble_affinity;  /* How much this pose suits treble-heavy music */
+    float facing;           /* v3.1: Facing direction in radians (0=forward, PI=back) */
+    float dip_amount;       /* v3.1: How much the body dips down (0-1) */
 } Pose;
 
 /* Skeleton definition */
@@ -188,6 +200,20 @@ typedef struct {
     float knee_pump;         /* v2.4: bass-reactive */
     float twist;             /* v2.4: rotation */
     
+    /* v3.1: Facing and spin system */
+    float facing;            /* Current facing angle (radians) */
+    float facing_target;     /* Target facing angle */
+    float facing_velocity;   /* Angular velocity for smooth rotation */
+    float spin_momentum;     /* Accumulated spin from moves */
+    float dip;               /* Current dip amount (0-1) */
+    float dip_target;        /* Target dip amount */
+    
+    /* v3.1: Energy override system */
+    float energy_override;   /* Manual energy adjustment (-1 to 1, 0 = no override) */
+    float energy_boost;      /* Temporary energy boost from keypresses */
+    float energy_boost_decay;/* How fast boost decays */
+    bool  energy_locked;     /* If true, ignore audio energy */
+    
     /* Audio analysis */
     AudioAnalysis audio;
     
@@ -232,6 +258,10 @@ void skeleton_dancer_update_with_phase(SkeletonDancer *dancer, float bass, float
 /* ============ Rendering ============ */
 void skeleton_dancer_render(SkeletonDancer *dancer, BrailleCanvas *canvas);
 
+/* ============ Accessors ============ */
+/* Get current joint positions for effects/shadows */
+const Joint* skeleton_dancer_get_joints(SkeletonDancer *dancer);
+
 /* ============ Body Bounds (v2.4) ============ */
 /* Get body bounding box in normalized coordinates (0-1 range) */
 void skeleton_dancer_get_bounds(SkeletonDancer *dancer,
@@ -244,6 +274,24 @@ void skeleton_dancer_get_bounds_pixels(SkeletonDancer *dancer,
                                        int *center_x, int *center_y,
                                        int *top_y, int *bottom_y,
                                        int *left_x, int *right_x);
+
+/* ============ v3.1: Energy Override System ============ */
+/* Adjust energy manually (+/- keys). Amount is -1 to 1 */
+void skeleton_dancer_adjust_energy(SkeletonDancer *dancer, float amount);
+/* Lock energy to ignore audio (toggle) */
+void skeleton_dancer_toggle_energy_lock(SkeletonDancer *dancer);
+/* Get effective energy (audio + override) */
+float skeleton_dancer_get_effective_energy(SkeletonDancer *dancer);
+/* Check if energy is locked */
+bool skeleton_dancer_is_energy_locked(SkeletonDancer *dancer);
+/* Get energy boost/override values for UI display */
+float skeleton_dancer_get_energy_override(SkeletonDancer *dancer);
+
+/* ============ v3.1: Facing/Spin Control ============ */
+/* Trigger a spin (direction: 1=clockwise, -1=counter-clockwise) */
+void skeleton_dancer_trigger_spin(SkeletonDancer *dancer, int direction);
+/* Get current facing angle */
+float skeleton_dancer_get_facing(SkeletonDancer *dancer);
 
 /* ============ Utilities ============ */
 float ease_in_out_quad(float t);

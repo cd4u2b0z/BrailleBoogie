@@ -32,7 +32,8 @@ typedef enum {
     PARTICLE_SPARK,     /* Single bright pixel */
     PARTICLE_DOT,       /* Small dot */
     PARTICLE_TRAIL,     /* Leaves trail behind */
-    PARTICLE_STAR       /* Star shape (5 pixels) */
+    PARTICLE_STAR,      /* Star shape (5 pixels) */
+    PARTICLE_NOTE       /* Music note shape */
 } ParticleType;
 
 /* Individual particle */
@@ -121,6 +122,7 @@ void particles_emit_treble_sparkle(ParticleSystem *ps, float x, float y, float i
 void particles_emit_beat_burst(ParticleSystem *ps, float x, float y, float intensity);
 void particles_emit_foot_stomp(ParticleSystem *ps, float x, float y, float intensity);
 void particles_emit_hand_flourish(ParticleSystem *ps, float x, float y, float vx, float vy);
+void particles_emit_music_notes(ParticleSystem *ps, float x, float y, float intensity);
 
 /* Update physics */
 void particles_update(ParticleSystem *ps, float dt);

@@ -5,6 +5,41 @@ All notable changes to ASCII Dancer will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 💃 v3.2.0 - Dance Revolution (January 2026)
+
+### 🕺 New Dance Styles
+- **Moonwalk** — 4 smooth backward slides with toe stands and glides
+- **Ballet** — 5 classical poses including arabesque, plié, and relevé
+- **Breakdance** — 4 power moves with toprocks, freezes, and prep stances
+- **Waltz** — 4 elegant ballroom positions with frames and turns
+- **Robot** — 5 mechanical movements with locks, isolations, and extensions
+- **Headbang** — 4 rock poses with power stances and horns up
+
+### 🎵 Enhanced Genre Detection
+- **Pop style** — New music style category for balanced, steady-beat tracks
+- **Easter egg triggers** — Special genre-specific moves activate randomly (~15% chance)
+- **Improved thresholds** — Better detection for electronic, hip-hop, rock, classical music
+- **Genre-pose mapping** — Electronic → Robot, Hip-hop → Moonwalk/Breakdance, Classical → Ballet/Waltz, Rock → Headbang
+
+### 📊 Pose System Expansion
+- **228 base poses** — Up from 36 poses (6× increase)
+- **~1,190 total variations** — Including procedural mirroring and tweaks
+- **13 pose categories** — Added 6 new genre-specific categories
+- **Anti-repetition** — Still avoids recent 8 poses for variety
+
+### 🧹 Code Cleanup
+- **Legacy code archived** — Moved 9 unused dancer files (~1,342 lines) to `src/dancer/legacy/`
+- **Removed stub features** — Cleaned up non-functional visualizer code
+- **Maintained API compatibility** — Stub functions retained for existing integrations
+
+### 📄 Technical
+- Modified: `src/braille/skeleton_dancer.h` — Added 6 pose categories, STYLE_POP enum
+- Modified: `src/braille/skeleton_dancer.c` — Added 26 new base poses, enhanced genre detection
+- Modified: `src/braille/braille_dancer.c` — Removed visualizer implementation
+- Archived: 9 legacy files → `src/dancer/legacy/`
+
+---
+
 > ⚠️ **Note:** This project is in early development and may contain bugs.
 
 ---

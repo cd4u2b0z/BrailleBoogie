@@ -1,11 +1,12 @@
 /*
- * Help Overlay Implementation - ASCII Dancer v2.4+
+ * Help Overlay Implementation - ASCII Dancer v3.1
  *
  * Renders a toggleable help screen with controls and current settings.
  * Uses box-drawing characters for clean terminal appearance.
  */
 
 #include "help_overlay.h"
+#include "dancer/dancer.h"
 #include <stdlib.h>
 #include <string.h>
 #include <ncurses.h>
@@ -33,13 +34,17 @@ static const HelpLine help_controls[] = {
     {"? / F1",     "Toggle this help"},
     {"",           ""},
     {"t",          "Cycle color themes"},
-    {"+/-",        "Adjust sensitivity"},
+    {"",           ""},
+    {"+/-",        "Increase/decrease energy"},
+    {"l",          "Toggle energy lock"},
+    {"[ / ]",      "Trigger spin left/right"},
     {"",           ""},
     {"g",          "Toggle ground line"},
     {"r",          "Toggle reflection/shadow"},
     {"p",          "Toggle particles"},
     {"m",          "Toggle motion trails"},
     {"b",          "Toggle breathing effect"},
+    {"v",          "Toggle visualizer bars"},
     {"",           ""},
     {"f",          "Toggle background FX"},
     {"e",          "Cycle FX types (7 modes)"},
@@ -238,8 +243,17 @@ void help_overlay_render(HelpOverlay *help,
     
     mvprintw(status_y, key_col, "BPM:");
     mvprintw(status_y, desc_col, "%.0f", bpm);
-    mvprintw(status_y, desc_col + 8, "Sens:");
-    mvprintw(status_y++, desc_col + 14, "%.1f", sensitivity);
+    /* v3.1: Show energy override instead of sensitivity */
+    float energy_mod = dancer_get_energy_override();
+    bool locked = dancer_is_energy_locked();
+    mvprintw(status_y, desc_col + 8, "Energy:");
+    if (locked) {
+        attron(A_BOLD | COLOR_PAIR(3));  /* Highlight when locked */
+        mvprintw(status_y++, desc_col + 16, "LOCKED %+.0f%%", energy_mod * 100);
+        attroff(A_BOLD | COLOR_PAIR(3));
+    } else {
+        mvprintw(status_y++, desc_col + 16, "%+.0f%%", energy_mod * 100);
+    }
     
     /* Toggle states */
     mvprintw(status_y, key_col, "Effects:");

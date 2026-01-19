@@ -335,6 +335,37 @@ void particles_emit_hand_flourish(ParticleSystem *ps, float x, float y, float vx
     particles_spawn(ps, &config, 2);
 }
 
+/* NEW: Spawn floating music note particles */
+void particles_emit_music_notes(ParticleSystem *ps, float x, float y, float intensity) {
+    if (!ps || !ps->enabled || intensity < 0.3f) return;
+    
+    /* Spawn 1-3 music notes floating upward */
+    int count = 1 + (int)(intensity * 2);
+    if (count > 3) count = 3;
+    
+    EmitterConfig config = {
+        .x = x,
+        .y = y,
+        .spread_angle = 1.0f,  /* ~60 degree spread */
+        .base_angle = -M_PI / 2,  /* Upward */
+        .min_speed = 20.0f,
+        .max_speed = 40.0f,
+        .min_life = 1.0f,   /* Notes last longer */
+        .max_life = 2.0f,
+        .gravity = -15.0f,  /* Float upward (negative gravity) */
+        .drag = 0.95f,
+        .size_min = 1.0f,
+        .size_max = 1.5f,
+        .pattern = SPAWN_POINT,
+        .type = PARTICLE_NOTE,
+        .color_base = 3,
+        .fade_out = true,
+        .shrink = false
+    };
+    
+    particles_spawn(ps, &config, count);
+}
+
 void particles_update(ParticleSystem *ps, float dt) {
     if (!ps || !ps->enabled) return;
     
@@ -468,6 +499,24 @@ void particles_render(ParticleSystem *ps, BrailleCanvas *canvas) {
                     braille_set_pixel(canvas, px + 1, py, true);
                     braille_set_pixel(canvas, px, py - 1, true);
                     braille_set_pixel(canvas, px, py + 1, true);
+                }
+                break;
+                
+            case PARTICLE_NOTE:
+                /* Music note shape - oval head + stem */
+                /* Note head (small filled oval) */
+                braille_set_pixel(canvas, px, py, true);
+                braille_set_pixel(canvas, px + 1, py, true);
+                braille_set_pixel(canvas, px, py + 1, true);
+                braille_set_pixel(canvas, px + 1, py + 1, true);
+                /* Stem going up */
+                braille_set_pixel(canvas, px + 1, py - 1, true);
+                braille_set_pixel(canvas, px + 1, py - 2, true);
+                braille_set_pixel(canvas, px + 1, py - 3, true);
+                /* Flag at top */
+                if (p->brightness > 0.4f) {
+                    braille_set_pixel(canvas, px + 2, py - 2, true);
+                    braille_set_pixel(canvas, px + 2, py - 3, true);
                 }
                 break;
         }
