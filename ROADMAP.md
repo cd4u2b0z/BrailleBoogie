@@ -6,8 +6,6 @@ Development roadmap and feature tracking for asciidancer.
 
 ## 󰐕 Current Status: v3.2.0 󰝚
 
-**Rating: 9.7/10 — 228 poses with genre-specific dance styles**
-
 ### 󰄬 Completed Features
 - [x] **228 base poses** across 13 categories (~1,190 with variations)
 - [x] **6 genre-specific dance styles** (moonwalk, ballet, breakdance, waltz, robot, headbang)
