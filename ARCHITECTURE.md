@@ -1,3 +1,5 @@
+**English** | [Русский](ARCHITECTURE.ru.md)
+
 # 󰙵 Architecture
 
 Technical architecture documentation for ASCII Dancer v3.2.

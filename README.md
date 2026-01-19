@@ -1,5 +1,7 @@
 <!-- {motion} = {motion} = Original work by Dr. Baklava • github.com/cd4u2b0z • 2026 -->
 
+**English** | [Русский](README.ru.md)
+
 # 󰝚 Braille-Boogie v3.2
 
 **A terminal-based audio visualizer with a dancing Unicode Braille character that reacts to music in real-time.**

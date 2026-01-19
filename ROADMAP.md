@@ -1,3 +1,5 @@
+**English** | [Русский](ROADMAP.ru.md)
+
 # 󰛤 Braille Boogie Roadmap
 
 Development roadmap and feature tracking for braille-boogie.

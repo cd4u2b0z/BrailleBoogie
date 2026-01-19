@@ -1,3 +1,5 @@
+**English** | [Русский](CHANGELOG.ru.md)
+
 # Changelog
 
 All notable changes to ASCII Dancer will be documented in this file.
