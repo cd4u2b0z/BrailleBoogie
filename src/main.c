@@ -367,6 +367,11 @@ int main(int argc, char *argv[]) {
         "default", "fire", "ice", "neon", "matrix", "synthwave", "mono",
         "aurora", "sunset", "ocean", "candy", "vapor", "ember"
     };
+    
+    // Effect names for display
+    const char *effect_names[] = {
+        "None", "Ambient", "Waves", "Aura", "Burst", "Ribbons", "Rain", "Vortex"
+    };
 
     // Main loop
     while (running && !audio.terminate) {
@@ -482,7 +487,7 @@ int main(int argc, char *argv[]) {
         const char *zone_name = energy_analyzer_get_zone_name(energy);
         float bpm_conf = bpm_tracker_get_confidence(bpm_tracker);
         snprintf(info_text, sizeof(info_text),
-                 "%.0fbpm(%d%%) %s %s %s%s%s%s%s%s%s p:%d",
+                 "%.0fbpm(%d%%) %s %s %s%s%s%s%s%s%s%s p:%d",
                  bpm_tracker_get_bpm(bpm_tracker),
                  (int)(bpm_conf * 100),
                  zone_name,
@@ -493,6 +498,7 @@ int main(int argc, char *argv[]) {
                  dancer_get_trails() ? "[M]" : "",
                  dancer_get_breathing() ? "[B]" : "",
                  bg_fx_enabled ? "[FX]" : "",
+                 bg_fx_enabled ? effect_names[current_bg_effect] : "",
                  recording ? "[REC]" : "",
                  dancer_get_particle_count());
         render_info(info_text);

@@ -41,6 +41,11 @@ static const HelpLine help_controls[] = {
     {"m",          "Toggle motion trails"},
     {"b",          "Toggle breathing effect"},
     {"",           ""},
+    {"f",          "Toggle background FX"},
+    {"e",          "Cycle FX types (7 modes)"},
+    {"",           ""},
+    {"x",          "Toggle recording"},
+    {"i",          "Toggle profiler"},
     {"d",          "Toggle debug mode"},
     {NULL, NULL}
 };
