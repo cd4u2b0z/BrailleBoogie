@@ -89,6 +89,9 @@ typedef struct {
     float body_radius;      /* Horizontal exclusion radius */
     bool body_mask_enabled;
     
+    /* Outward repulsion from body center (v2.4) */
+    float repulsion_strength;
+    
     /* Max particle cap for visual clarity */
     int max_active;
     
@@ -134,6 +137,21 @@ bool particles_is_enabled(ParticleSystem *ps);
 void particles_set_body_mask(ParticleSystem *ps, float center_x, float center_y,
                              float head_y, float foot_y, float radius);
 void particles_set_fade_multiplier(ParticleSystem *ps, float mult);
+
+/* Control bus driven emission (v2.4)
+ * Spawns particles based on control bus signals:
+ * - count scales with onset + energy
+ * - spread radius scales with energy
+ * - velocity scales with onset
+ * - lifetime inversely scales with energy (fast decay at high energy)
+ */
+void particles_emit_controlled(ParticleSystem *ps, 
+                               float x, float y,
+                               float energy, float onset, 
+                               float bass, float treble);
+
+/* Set outward repulsion strength from body center */
+void particles_set_repulsion(ParticleSystem *ps, float strength);
 
 /* Statistics */
 int particles_get_active_count(ParticleSystem *ps);

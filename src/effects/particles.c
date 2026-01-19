@@ -37,6 +37,7 @@ ParticleSystem* particles_create(int canvas_width, int canvas_height) {
     ps->body_center_x = canvas_width / 2.0f;
     ps->body_center_y = canvas_height / 2.0f;
     ps->body_radius = 8.0f;
+    ps->repulsion_strength = 60.0f;  /* Default outward repulsion */
     
     /* Particle cap for visual clarity */
     ps->max_active = 40;  /* Reduced from 256 for cleaner visuals */
@@ -376,10 +377,26 @@ void particles_update(ParticleSystem *ps, float dt) {
             float dy = p->y - ps->body_center_y;
             float dist = sqrtf(dx * dx + dy * dy);
             
-            if (dist < ps->body_radius * 0.7f && dist > 0.1f) {
-                /* Push outward with some velocity */
-                p->vx += (dx / dist) * 30.0f * dt;
-                p->vy += (dy / dist) * 30.0f * dt;
+            if (dist < ps->body_radius * 0.9f && dist > 0.1f) {
+                /* Push outward with repulsion force */
+                float repel = ps->repulsion_strength > 0 ? ps->repulsion_strength : 50.0f;
+                float push_factor = (ps->body_radius - dist) / ps->body_radius;
+                p->vx += (dx / dist) * repel * push_factor;
+                p->vy += (dy / dist) * repel * push_factor;
+            }
+        }
+        
+        /* Apply outward bias even outside body mask (v2.4) */
+        if (ps->repulsion_strength > 0 && ps->body_mask_enabled) {
+            float dx = p->x - ps->body_center_x;
+            float dy = p->y - ps->body_center_y;
+            float dist = sqrtf(dx * dx + dy * dy);
+            
+            if (dist > 0.1f && dist < ps->body_radius * 2.0f) {
+                /* Gentle outward drift */
+                float drift = ps->repulsion_strength * 0.1f * dt;
+                p->vx += (dx / dist) * drift;
+                p->vy += (dy / dist) * drift;
             }
         }
         
@@ -493,4 +510,75 @@ void particles_set_body_mask(ParticleSystem *ps, float center_x, float center_y,
 void particles_set_fade_multiplier(ParticleSystem *ps, float mult) {
     if (!ps) return;
     ps->fade_multiplier = (mult > 0.1f) ? mult : 0.1f;
+}
+
+void particles_set_repulsion(ParticleSystem *ps, float strength) {
+    if (!ps) return;
+    ps->repulsion_strength = strength;
+}
+
+/* Control bus driven emission (v2.4) */
+void particles_emit_controlled(ParticleSystem *ps, 
+                               float x, float y,
+                               float energy, float onset, 
+                               float bass, float treble) {
+    if (!ps || !ps->enabled) return;
+    
+    /* Don't spawn if at particle cap */
+    if (ps->active_count >= ps->max_active) return;
+    
+    /* Count scales with onset + energy */
+    int count = (int)(onset * 6.0f + energy * 4.0f);
+    if (count < 1) return;
+    if (count > 8) count = 8;  /* Hard cap per frame */
+    
+    /* Spread radius scales with energy */
+    float spread = 0.3f + energy * 0.7f;  /* π * 0.3 to π * 1.0 */
+    
+    /* Velocity scales with onset */
+    float speed_base = 20.0f + onset * 60.0f;
+    float speed_max = speed_base * 1.5f;
+    
+    /* Lifetime inversely scales with energy (fast decay at high energy) */
+    float life_base = 0.5f - energy * 0.3f;  /* 0.5 to 0.2 seconds */
+    if (life_base < 0.15f) life_base = 0.15f;
+    
+    /* Choose emission type based on bass/treble balance */
+    SpawnPattern pattern;
+    int color;
+    if (bass > treble * 1.5f) {
+        /* Bass dominated - upward fountain */
+        pattern = SPAWN_FOUNTAIN;
+        color = 1;  /* Warm color */
+    } else if (treble > bass * 1.5f) {
+        /* Treble dominated - sparkle */
+        pattern = SPAWN_SPARKLE;
+        color = 2;  /* Cool color */
+    } else {
+        /* Balanced - burst */
+        pattern = SPAWN_BURST;
+        color = 0;  /* Neutral */
+    }
+    
+    EmitterConfig config = {
+        .x = x,
+        .y = y,
+        .spread_angle = spread * M_PI,
+        .base_angle = -M_PI / 2,  /* Up */
+        .min_speed = speed_base,
+        .max_speed = speed_max,
+        .min_life = life_base * 0.7f,
+        .max_life = life_base * 1.3f,
+        .gravity = 100.0f + energy * 100.0f,  /* More gravity at high energy */
+        .drag = 0.92f,
+        .size_min = 1.0f,
+        .size_max = 1.0f,
+        .pattern = pattern,
+        .type = PARTICLE_SPARK,
+        .color_base = color,
+        .fade_out = true,
+        .shrink = false
+    };
+    
+    particles_spawn(ps, &config, count);
 }

@@ -780,6 +780,27 @@ void skeleton_dancer_update(SkeletonDancer *d, float bass, float mid, float treb
         d->current[i] = d->physics[i].position;
     }
     
+    /* Knee constraint (v2.4) - prevent knock-kneed look */
+    {
+        float cx = d->current[JOINT_HIP_CENTER].x;
+        float knee_offset = 0.04f;
+        
+        /* Use internal phase for stance detection */
+        bool left_planted = (d->phase < 0.5f || d->phase > 1.5f);
+        
+        float left_limit = cx - (left_planted ? knee_offset : 0.01f);
+        if (d->current[JOINT_KNEE_L].x > left_limit) {
+            d->current[JOINT_KNEE_L].x = left_limit;
+            d->physics[JOINT_KNEE_L].position.x = left_limit;
+        }
+        
+        float right_limit = cx + (!left_planted ? knee_offset : 0.01f);
+        if (d->current[JOINT_KNEE_R].x < right_limit) {
+            d->current[JOINT_KNEE_R].x = right_limit;
+            d->physics[JOINT_KNEE_R].position.x = right_limit;
+        }
+    }
+    
     /* Advance phase */
     d->phase += dt * d->tempo;
 }
@@ -1104,6 +1125,112 @@ void skeleton_dancer_update_with_phase(SkeletonDancer *d,
         d->current[i] = d->physics[i].position;
     }
     
+    /* ============ KNEE CONSTRAINT SYSTEM (v2.4) ============
+     * Prevents knees from collapsing inward (knock-kneed look)
+     * 
+     * Rules:
+     * - Define centerline cx at hip center
+     * - Left knee must be <= cx - knee_offset when planted
+     * - Right knee must be >= cx + knee_offset when planted
+     * - beat_phase [0..0.5] = left foot planted
+     * - beat_phase [0.5..1] = right foot planted
+     * - Swinging foot has relaxed constraint (just don't cross center)
+     */
+    {
+        float cx = d->current[JOINT_HIP_CENTER].x;  /* Centerline */
+        float knee_offset = 0.04f;  /* Minimum distance from center */
+        float knee_offset_swing = 0.01f;  /* Relaxed offset for swinging leg */
+        
+        /* Determine which foot is planted based on beat_phase */
+        bool left_planted = (beat_phase < 0.5f);
+        bool right_planted = !left_planted;
+        
+        /* Apply constraint to left knee */
+        float left_limit = cx - (left_planted ? knee_offset : knee_offset_swing);
+        if (d->current[JOINT_KNEE_L].x > left_limit) {
+            d->current[JOINT_KNEE_L].x = left_limit;
+            d->physics[JOINT_KNEE_L].position.x = left_limit;
+            d->physics[JOINT_KNEE_L].velocity.x *= -0.3f;  /* Bounce back */
+        }
+        
+        /* Apply constraint to right knee */
+        float right_limit = cx + (right_planted ? knee_offset : knee_offset_swing);
+        if (d->current[JOINT_KNEE_R].x < right_limit) {
+            d->current[JOINT_KNEE_R].x = right_limit;
+            d->physics[JOINT_KNEE_R].position.x = right_limit;
+            d->physics[JOINT_KNEE_R].velocity.x *= -0.3f;  /* Bounce back */
+        }
+        
+        /* Also constrain feet to follow knees outward */
+        float foot_offset = knee_offset * 0.5f;
+        float left_foot_limit = cx - foot_offset;
+        float right_foot_limit = cx + foot_offset;
+        
+        if (d->current[JOINT_FOOT_L].x > left_foot_limit && left_planted) {
+            d->current[JOINT_FOOT_L].x = left_foot_limit;
+            d->physics[JOINT_FOOT_L].position.x = left_foot_limit;
+        }
+        if (d->current[JOINT_FOOT_R].x < right_foot_limit && right_planted) {
+            d->current[JOINT_FOOT_R].x = right_foot_limit;
+            d->physics[JOINT_FOOT_R].position.x = right_foot_limit;
+        }
+    }
+    
+    /* Update cached body bounds for particle exclusion (v2.4) */
+    {
+        float min_x = 1.0f, max_x = 0.0f;
+        float min_y = 1.0f, max_y = 0.0f;
+        float sum_x = 0.0f, sum_y = 0.0f;
+        
+        for (int i = 0; i < JOINT_COUNT; i++) {
+            float x = d->current[i].x;
+            float y = d->current[i].y;
+            if (x < min_x) min_x = x;
+            if (x > max_x) max_x = x;
+            if (y < min_y) min_y = y;
+            if (y > max_y) max_y = y;
+            sum_x += x;
+            sum_y += y;
+        }
+        
+        d->body_center_x = sum_x / JOINT_COUNT;
+        d->body_center_y = sum_y / JOINT_COUNT;
+        d->body_left_x = min_x - 0.02f;   /* Add margin */
+        d->body_right_x = max_x + 0.02f;
+        d->body_top_y = min_y - 0.03f;    /* Head is at min Y */
+        d->body_bottom_y = max_y + 0.01f;
+    }
+    
     /* Advance phase using external beat_phase for synchronization */
     d->phase = beat_phase;
+}
+
+/* ============ Body Bounds Accessors (v2.4) ============ */
+
+void skeleton_dancer_get_bounds(SkeletonDancer *d,
+                                float *center_x, float *center_y,
+                                float *top_y, float *bottom_y,
+                                float *left_x, float *right_x) {
+    if (!d) return;
+    if (center_x) *center_x = d->body_center_x;
+    if (center_y) *center_y = d->body_center_y;
+    if (top_y) *top_y = d->body_top_y;
+    if (bottom_y) *bottom_y = d->body_bottom_y;
+    if (left_x) *left_x = d->body_left_x;
+    if (right_x) *right_x = d->body_right_x;
+}
+
+void skeleton_dancer_get_bounds_pixels(SkeletonDancer *d,
+                                       int *center_x, int *center_y,
+                                       int *top_y, int *bottom_y,
+                                       int *left_x, int *right_x) {
+    if (!d) return;
+    
+    /* Convert from normalized (0-1) to pixel coordinates */
+    if (center_x) *center_x = (int)((d->body_center_x - 0.5f) * d->scale + d->offset_x);
+    if (center_y) *center_y = (int)(d->body_center_y * d->scale + d->offset_y);
+    if (top_y) *top_y = (int)(d->body_top_y * d->scale + d->offset_y);
+    if (bottom_y) *bottom_y = (int)(d->body_bottom_y * d->scale + d->offset_y);
+    if (left_x) *left_x = (int)((d->body_left_x - 0.5f) * d->scale + d->offset_x);
+    if (right_x) *right_x = (int)((d->body_right_x - 0.5f) * d->scale + d->offset_x);
 }

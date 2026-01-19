@@ -184,6 +184,9 @@ typedef struct {
     float hip_sway;
     float bounce;
     float lean;
+    float shoulder_shimmy;   /* v2.4: treble-reactive */
+    float knee_pump;         /* v2.4: bass-reactive */
+    float twist;             /* v2.4: rotation */
     
     /* Audio analysis */
     AudioAnalysis audio;
@@ -206,6 +209,14 @@ typedef struct {
     
     /* Random seed for variation */
     unsigned int random_state;
+    
+    /* v2.4: Cached body bounds for particle exclusion */
+    float body_center_x;
+    float body_center_y;
+    float body_top_y;       /* Head top */
+    float body_bottom_y;    /* Feet bottom */
+    float body_left_x;      /* Leftmost point */
+    float body_right_x;     /* Rightmost point */
 } SkeletonDancer;
 
 /* ============ Creation/Destruction ============ */
@@ -220,6 +231,19 @@ void skeleton_dancer_update_with_phase(SkeletonDancer *dancer, float bass, float
 
 /* ============ Rendering ============ */
 void skeleton_dancer_render(SkeletonDancer *dancer, BrailleCanvas *canvas);
+
+/* ============ Body Bounds (v2.4) ============ */
+/* Get body bounding box in normalized coordinates (0-1 range) */
+void skeleton_dancer_get_bounds(SkeletonDancer *dancer,
+                                float *center_x, float *center_y,
+                                float *top_y, float *bottom_y,
+                                float *left_x, float *right_x);
+
+/* Get body bounds in pixel coordinates */
+void skeleton_dancer_get_bounds_pixels(SkeletonDancer *dancer,
+                                       int *center_x, int *center_y,
+                                       int *top_y, int *bottom_y,
+                                       int *left_x, int *right_x);
 
 /* ============ Utilities ============ */
 float ease_in_out_quad(float t);
