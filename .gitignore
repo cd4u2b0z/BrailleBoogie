@@ -1,0 +1,28 @@
+# Build artifacts
+*.o
+*.a
+*.so
+*.dylib
+asciidancer
+
+# IDE/Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Debug
+*.dSYM/
+core
+vgcore.*
+
+# Backup files
+*.bak
+*.backup
+*.orig
+
+# Generated files
+compile_commands.json
+.cache/
