@@ -5,7 +5,57 @@ All notable changes to ASCII Dancer will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+> ⚠️ **Note:** This project is in early development and may contain bugs.
+
 ---
+
+## 🚀 v3.0 - Big Audio Upgrade (January 2026)
+
+### 🎯 Advanced BPM Tracker
+- **Multi-tap tempo averaging** — Analyzes multiple beat intervals with histogram clustering
+- **Confidence scoring (0-1)** — Shows how reliable the BPM estimate is
+- **Stability tracking** — Measures tempo consistency over time
+- **Tempo locking** — High confidence + high stability = locked tempo
+- **Half/double time detection** — Identifies alternative tempo interpretations
+- **40-240 BPM range** — Wider than original 60-200 range
+- **Adaptive tracking** — Handles gradual tempo changes smoothly
+
+### 📊 Dynamic Energy Analyzer
+- **RMS energy calculation** — Root mean square power measurement
+- **Peak detection** — Maximum amplitude tracking
+- **Intensity zones** — Silent, Low, Medium, High, Peak classifications
+- **Envelope follower** — Attack/release smoothing for smooth visualization
+- **Spectral features** — Centroid (brightness), spread, rolloff analysis
+- **Dynamic range analysis** — Peak vs RMS in dB
+- **Pace intensity** — Combined BPM + energy metric
+- **Adaptive thresholds** — Self-adjusting zone boundaries based on history
+- **6-band energy tracking** — Sub-bass through treble
+
+### 🌟 Spectacular Background Effects
+7 particle-based background effect modes:
+- ✨ **Ambient Field** — Floating twinkling particles
+- 🌊 **Spectral Waves** — Frequency-reactive wave pulses from bottom
+- 💫 **Energy Aura** — Pulsing ring around dancer
+- 💥 **Beat Burst** — Explosions synchronized to beats (with cooldown)
+- 📊 **Frequency Ribbons** — Vertical frequency bars
+- 🌧️ **Particle Rain** — Falling particles from top
+- 🌀 **Spiral Vortex** — Rotating spiral arms
+
+All effects feature:
+- Intensity adjustment (0-1)
+- Speed control
+- Full audio reactivity (frequency bands, energy, beats)
+- Integration with existing 256-particle system
+
+### 📄 Technical
+- New files: `src/audio/bpm_tracker.h`, `src/audio/bpm_tracker.c` (~270 lines)
+- New files: `src/audio/energy_analyzer.h`, `src/audio/energy_analyzer.c` (~380 lines)
+- New files: `src/effects/background_fx.h`, `src/effects/background_fx.c` (~460 lines)
+- Updated: `Makefile` (V30_SRCS variable for new modules)
+- Total new code: ~1,540 lines
+
+---
+
 ## 🎨 v2.4+ - Help & Themes (January 2026)
 
 ### 🆕 New Features

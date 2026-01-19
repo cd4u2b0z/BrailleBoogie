@@ -4,9 +4,9 @@ Development roadmap and feature tracking for asciidancer.
 
 ---
 
-##  Current Status: v2.4+
+##  Current Status: v3.0
 
-**Rating: 9.7/10** — Feature-complete visualizer with help overlay and expanded themes
+**Rating: 9.9/10 — Advanced audio analysis with spectacular background effects
 
 ###  Completed Features
 - [x] 36 unique poses across 7 energy categories
@@ -35,6 +35,44 @@ Development roadmap and feature tracking for asciidancer.
 - [x] 13 color themes (6 new: aurora, sunset, ocean, candy, vapor, ember)
 
 ---
+
+
+---
+
+##  v3.0 — Big Audio Upgrade (COMPLETED)
+
+**Achieved: 9.7 → 9.9** | Released 2026-01-18
+
+### 🎯 Advanced BPM Tracker
+- [x] Multi-tap tempo averaging with histogram clustering
+- [x] Confidence scoring (0-1) for BPM reliability
+- [x] Stability tracking over time
+- [x] Tempo locking when confident + stable
+- [x] Half/double time detection
+- [x] 40-240 BPM range (expanded from 60-200)
+- [x] Adaptive tracking for gradual tempo changes
+
+### 📊 Dynamic Energy Analyzer
+- [x] RMS energy calculation
+- [x] Peak detection and envelope follower
+- [x] 5 intensity zones (Silent, Low, Medium, High, Peak)
+- [x] Spectral features (centroid, spread, rolloff)
+- [x] Dynamic range analysis (dB)
+- [x] Pace intensity metric (BPM + energy)
+- [x] Adaptive thresholds based on history
+- [x] 6-band energy tracking
+
+### 🌟 Background Particle Effects
+- [x] 7 spectacular effect modes
+- [x] Ambient Field (floating twinkling particles)
+- [x] Spectral Waves (frequency-reactive pulses)
+- [x] Energy Aura (pulsing ring around dancer)
+- [x] Beat Burst (synchronized explosions)
+- [x] Frequency Ribbons (vertical bars)
+- [x] Particle Rain (falling from top)
+- [x] Spiral Vortex (rotating arms)
+- [x] Intensity and speed control
+- [x] Full audio reactivity integration
 
 ##  v2.1 — Quick Polish (COMPLETED)
 

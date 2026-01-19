@@ -1,15 +1,18 @@
 <- {motion} = {motion} = Original work by Dr. Baklava • github.com/cd4u2b0z • 2026 -->
 
-#  ASCII Dancer v2.4+
+#  ASCII Dancer v3.0
 
 **A terminal-based audio visualizer with a dancing Unicode Braille character that reacts to music in real-time.**
 
-**Latest:** Help overlay • 6 new themes (13 total) • Control bus architecture • UI reactivity
+> ⚠️ **Early Development** — This project is in its infancy and may contain bugs. Contributions, bug reports, and feedback are welcome!
+
+**Latest:** Advanced BPM tracking • Dynamic energy analysis • 7 spectacular background effects
 
 ![Linux](https://img.shields.io/badge/Linux-FCC624?style=flat&logo=linux&logoColor=black)
 ![C](https://img.shields.io/badge/C-A8B9CC?style=flat&logo=c&logoColor=black)
 ![PipeWire](https://img.shields.io/badge/PipeWire-4A86CF?style=flat&logo=linux&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat)
+![Version](https://img.shields.io/badge/Version-3.0-blue?style=flat)
 
 ```
     ⠀⣀⣀⠀
@@ -60,6 +63,24 @@ Automatic genre detection adapts the dancer's style:
 - **Anti-repetition** pose history (avoids recent 8 poses)
 - **Smooth interpolation** via easing functions
 - **Momentum** and follow-through physics
+
+###  v3.0 Audio Analysis
+| Feature | Description |
+|---------|-------------|
+| 🎯 **BPM Tracker** | Multi-tap tempo averaging with confidence + stability |
+| 📊 **Energy Analyzer** | RMS energy, intensity zones, spectral features |
+| 🌟 **Background FX** | 7 particle effects (ambient, waves, aura, burst, ribbons, rain, vortex) |
+
+###  v3.0 Background Effects
+| Effect | Description |
+|--------|-------------|
+| ✨ **Ambient Field** | Floating twinkling particles |
+| 🌊 **Spectral Waves** | Frequency-reactive wave pulses |
+| 💫 **Energy Aura** | Pulsing ring around dancer |
+| 💥 **Beat Burst** | Explosions synchronized to beats |
+| 📊 **Frequency Ribbons** | Vertical frequency bars |
+| 🌧️ **Particle Rain** | Falling particles from top |
+| 🌀 **Spiral Vortex** | Rotating spiral arms |
 
 ---
 
@@ -257,7 +278,10 @@ asciidancer/
 │   ├  audio/
 │   │   ├  pipewire.c      # PipeWire capture
 │   │   ├  pulse.c         # PulseAudio capture
-│   │   └  common.c        # Shared audio utilities
+│   │   ├  common.c        # Shared audio utilities
+│   │   ├  rhythm.c        # Beat detection, BPM
+│   │   ├  bpm_tracker.c   # v3.0 Advanced BPM tracking
+│   │   └  energy_analyzer.c # v3.0 Dynamic energy analysis
 │   ├  braille/
 │   │   ├  braille_canvas.c # Pixel-to-braille conversion
 │   │   ├  braille_dancer.c # Dancer integration
@@ -265,7 +289,13 @@ asciidancer/
 │   ├  effects/
 │   │   ├  particles.c     # Particle system
 │   │   ├  trails.c        # Motion trails
-│   │   └  effects.c       # Effects manager
+│   │   ├  effects.c       # Effects manager
+│   │   └  background_fx.c # v3.0 Background effects
+│   ├  control/
+│   │   └  control_bus.c   # Unified audio signals
+│   ├  ui/
+│   │   ├  ui_reactive.c   # Reactive UI elements
+│   │   └  help_overlay.c  # Interactive help
 │   ├  render/
 │   │   ├  render_new.c    # ncurses rendering
 │   │   └  colors.c        # 256-color themes
@@ -276,6 +306,7 @@ asciidancer/
 ├  README.md
 ├  CHANGELOG.md
 ├  ROADMAP.md
+├  ARCHITECTURE.md
 └  Makefile
 ```
 
