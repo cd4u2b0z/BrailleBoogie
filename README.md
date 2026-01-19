@@ -402,12 +402,6 @@ Audio capture and FFT processing adapted from cava (Console-based Audio Visualiz
 
 ---
 
-## 󰿃 License
-
-MIT License - See [LICENSE](LICENSE) for details.
-
----
-
 ## 󰓎 Contributing
 
 Contributions are welcome! Whether it's:
@@ -417,21 +411,19 @@ Contributions are welcome! Whether it's:
 - 󰃢 Bug fixes and optimizations
 - 󰈙 Documentation improvements
 
-Feel free to open issues or submit pull requests!
+Feel free to open issues or submit pull requests.
 
 ---
 
-## 󰓎 Keywords
+## 󰿃 License
 
-**For Discoverability:** terminal audio visualizer, ascii art music visualization, braille graphics, ncurses dancing character, real-time audio reactive animation, FFT music visualizer, TUI audio spectrum, command line music visualizer, terminal music player visualization, audio driven ascii art, unicode braille animation, terminal particles, CLI music visualizer, PipeWire visualizer, PulseAudio visualizer, CoreAudio visualizer, Linux music visualization, macOS terminal visualizer, beat detection visualization, genre-aware dancer
+MIT License - See [LICENSE](LICENSE) for details.
 
 ---
 
 <div align="center">
 
 **"Code dances when the music plays."**
-
-**⭐ Star this repo if you enjoy terminal art! ⭐**
 
 </div>
 
