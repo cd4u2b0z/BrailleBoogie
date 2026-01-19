@@ -1,11 +1,15 @@
-# ASCII Dancer Makefile v3.0
+# ASCII Dancer Makefile v3.2
 # Supports config files, 256-color themes, ground/shadow effects
 # v2.4: Control bus, UI reactivity, enhanced particles
 # v3.0: Advanced BPM tracker, dynamic energy analysis, background effects
+# v3.2: macOS CoreAudio support
 
 CC = gcc
 CFLAGS = -Wall -Wextra -O2 -g -I./src
 LDFLAGS = -lm -lfftw3 -lncursesw -lpthread
+
+# Detect operating system
+UNAME_S := $(shell uname -s)
 
 PIPEWIRE_CFLAGS := $(shell pkg-config --cflags libpipewire-0.3 2>/dev/null)
 PIPEWIRE_LIBS := $(shell pkg-config --libs libpipewire-0.3 2>/dev/null)
@@ -51,16 +55,27 @@ BRAILLE_SRCS = src/braille/braille_canvas.c \
 # Audio sources
 AUDIO_SRCS =
 
-ifneq ($(PIPEWIRE_CFLAGS),)
-    CFLAGS += -DPIPEWIRE $(PIPEWIRE_CFLAGS)
-    LDFLAGS += $(PIPEWIRE_LIBS)
-    AUDIO_SRCS += src/audio/pipewire.c
-endif
+# macOS CoreAudio
+ifeq ($(UNAME_S),Darwin)
+    CFLAGS += -D__APPLE__
+    LDFLAGS += -framework CoreAudio -framework AudioToolbox -framework CoreFoundation
+    AUDIO_SRCS += src/audio/coreaudio.c
+    # macOS may need explicit ncurses path
+    CFLAGS += -I/opt/homebrew/opt/ncurses/include -I/usr/local/opt/ncurses/include
+    LDFLAGS := $(filter-out -lncursesw,$(LDFLAGS)) -L/opt/homebrew/opt/ncurses/lib -L/usr/local/opt/ncurses/lib -lncursesw
+else
+    # Linux audio backends
+    ifneq ($(PIPEWIRE_CFLAGS),)
+        CFLAGS += -DPIPEWIRE $(PIPEWIRE_CFLAGS)
+        LDFLAGS += $(PIPEWIRE_LIBS)
+        AUDIO_SRCS += src/audio/pipewire.c
+    endif
 
-ifneq ($(PULSE_CFLAGS),)
-    CFLAGS += -DPULSE $(PULSE_CFLAGS)
-    LDFLAGS += $(PULSE_LIBS)
-    AUDIO_SRCS += src/audio/pulse.c
+    ifneq ($(PULSE_CFLAGS),)
+        CFLAGS += -DPULSE $(PULSE_CFLAGS)
+        LDFLAGS += $(PULSE_LIBS)
+        AUDIO_SRCS += src/audio/pulse.c
+    endif
 endif
 
 # Default: frame-based dancer

@@ -50,8 +50,9 @@ src/
 ├── 󰈮 constants.h            # v3.2: Centralized magic numbers (~150 params)
 │
 ├── 󰎈 audio/                 # Audio capture
-│   ├── pipewire.c          # PipeWire stream
-│   ├── pulse.c             # PulseAudio capture
+│   ├── pipewire.c          # PipeWire stream (Linux)
+│   ├── pulse.c             # PulseAudio capture (Linux)
+│   ├── coreaudio.c         # CoreAudio capture (macOS)
 │   ├── rhythm.c            # Beat detection (v2.3)
 │   ├── bpm_tracker.c       # v3.0: Advanced BPM with confidence/stability
 │   ├── energy_analyzer.c   # v3.0: RMS energy, intensity zones
@@ -104,11 +105,15 @@ src/
 ```
 ┌─────────────────┐     ┌─────────────────┐
 │   Main Thread   │     │  Audio Thread   │
-│  - FFT process  │◄────│  - PW/PA stream │
+│  - FFT process  │◄────│  - PW/PA/CA     │
 │  - Animation    │     │  - Sample write │
 │  - Rendering    │     └─────────────────┘
 └─────────────────┘
 ```
+
+**Audio Backends:**
+- **Linux:** PipeWire (preferred) or PulseAudio
+- **macOS:** CoreAudio (AudioQueue API)
 
 **Flow:** Audio → Ring Buffer → FFT → 256 bins → bass/mid/treble
 

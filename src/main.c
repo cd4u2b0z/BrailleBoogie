@@ -248,6 +248,11 @@ int main(int argc, char *argv[]) {
     pthread_t audio_thread;
     int thread_result = -1;
 
+#ifdef __APPLE__
+    // macOS uses CoreAudio
+    thread_result = pthread_create(&audio_thread, NULL, input_coreaudio, (void *)&audio);
+#else
+    // Linux audio backends
 #ifdef PULSE
     if (use_pulse) {
         if (strcmp(audio.source, "auto") == 0) {
@@ -262,6 +267,7 @@ int main(int argc, char *argv[]) {
         thread_result = pthread_create(&audio_thread, NULL, input_pipewire, (void *)&audio);
     }
 #endif
+#endif // __APPLE__
 
     if (thread_result != 0) {
         fprintf(stderr, "Failed to start audio thread\n");

@@ -18,7 +18,8 @@
 // Audio input methods
 enum input_method {
     INPUT_PIPEWIRE,
-    INPUT_PULSE
+    INPUT_PULSE,
+    INPUT_COREAUDIO
 };
 
 // Shared audio data structure between input thread and main thread
@@ -63,4 +64,8 @@ void *input_pipewire(void *data);
 #ifdef PULSE
 void *input_pulse(void *data);
 void getPulseDefaultSink(void *data);
+#endif
+
+#ifdef __APPLE__
+void *input_coreaudio(void *data);
 #endif

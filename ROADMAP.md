@@ -69,6 +69,11 @@ Development roadmap and feature tracking for asciidancer.
 - [x] **Centralized constants** — New `constants.h` with ~150 tuning parameters
 - [x] **Scanline flood fill** — Bounded O(4096) memory vs previous O(width*height)
 
+### 󰣇 Platform Support (v3.2.2)
+- [x] **macOS CoreAudio backend** — Native audio capture via AudioQueue API
+- [x] **Cross-platform Makefile** — Automatic OS detection and framework linking
+- [x] **Homebrew support** — Easy installation on macOS
+
 ### 󰃢 Code Cleanup
 - [x] **Legacy code archived** — Moved 9 unused files (~1,342 lines) to `src/dancer/legacy/`
 - [x] **Removed stub features** — Cleaned up non-functional visualizer code

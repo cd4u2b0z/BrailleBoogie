@@ -9,6 +9,7 @@
 **Latest:** 228 base poses 󰸞 Genre-specific dance styles 󰝚 Moonwalk, ballet, breakdance, and more
 
 ![Linux](https://img.shields.io/badge/Linux-FCC624?style=flat&logo=linux&logoColor=black)
+![macOS](https://img.shields.io/badge/macOS-000000?style=flat&logo=apple&logoColor=white)
 ![C](https://img.shields.io/badge/C-A8B9CC?style=flat&logo=c&logoColor=black)
 ![PipeWire](https://img.shields.io/badge/PipeWire-4A86CF?style=flat&logo=linux&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat)
@@ -103,6 +104,9 @@ sudo apt install libfftw3-dev libpulse-dev libncurses-dev libpipewire-0.3-dev pk
 
 # Fedora
 sudo dnf install fftw-devel pulseaudio-libs-devel ncurses-devel pipewire-devel pkg-config
+
+# macOS (Homebrew)
+brew install fftw ncurses pkg-config
 ```
 
 ---
@@ -120,6 +124,11 @@ make braille
 # Or build the frame-based dancer
 make
 ```
+
+**macOS Notes:**
+- Uses CoreAudio for audio capture (automatic detection)
+- May require Xcode Command Line Tools: `xcode-select --install`
+- If ncurses not found, install via Homebrew: `brew install ncurses`
 
 ### 󰎁 Generate Demo GIF
 
@@ -238,7 +247,7 @@ fps = 60
 
 ```
 ┌─────────────────────────────────────┐
-│      PipeWire / PulseAudio          │
+│   PipeWire / PulseAudio / CoreAudio │
 │        (Audio Capture Thread)       │
 └─────────────────────────────────────┘
                   │
@@ -322,8 +331,9 @@ asciidancer/
 │   ├─ 󰈮 main.c              # Entry point, main loop
 │   ├─ 󰈮 constants.h         # v3.2 Centralized magic numbers
 │   ├─ 󰎈 audio/
-│   │   ├─ pipewire.c        # PipeWire capture
-│   │   ├─ pulse.c           # PulseAudio capture
+│   │   ├─ pipewire.c        # PipeWire capture (Linux)
+│   │   ├─ pulse.c           # PulseAudio capture (Linux)
+│   │   ├─ coreaudio.c       # CoreAudio capture (macOS)
 │   │   ├─ common.c          # Shared audio utilities
 │   │   ├─ rhythm.c          # Beat detection, BPM
 │   │   ├─ bpm_tracker.c     # v3.0 Advanced BPM tracking
