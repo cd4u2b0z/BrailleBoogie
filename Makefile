@@ -8,6 +8,13 @@ CC = gcc
 CFLAGS = -Wall -Wextra -O2 -g -I./src
 LDFLAGS = -lm -lfftw3 -lncursesw -lpthread
 
+# Version info from git
+VERSION := $(shell git describe --tags --always --dirty 2>/dev/null || echo "v3.2.0")
+GIT_HASH := $(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+BUILD_DATE := $(shell date -u +"%Y-%m-%d")
+
+CFLAGS += -DVERSION=\"$(VERSION)\" -DGIT_HASH=\"$(GIT_HASH)\" -DBUILD_DATE=\"$(BUILD_DATE)\"
+
 # Detect operating system
 UNAME_S := $(shell uname -s)
 
@@ -87,7 +94,43 @@ TARGET = asciidancer
 BRAILLE_ALL_SRCS = $(COMMON_SRCS) $(BRAILLE_SRCS) $(V24_SRCS) $(V30_SRCS) $(V30P_SRCS) $(AUDIO_SRCS)
 BRAILLE_OBJS = $(BRAILLE_ALL_SRCS:.c=.o)
 
-.PHONY: all braille clean install
+.PHONY: all braille clean clean-objs install run debug help info
+
+# Default target
+all: $(TARGET)
+
+# Show help
+help:
+	@echo "ASCII Dancer $(VERSION) - Build Targets"
+	@echo ""
+	@echo "  make           - Build frame-based dancer (default)"
+	@echo "  make braille   - Build braille skeleton dancer (recommended)"
+	@echo "  make run       - Build and run braille dancer"
+	@echo "  make debug     - Build with debug symbols and run in gdb"
+	@echo "  make clean     - Remove all build artifacts"
+	@echo "  make install   - Install to ~/.local/bin"
+	@echo "  make info      - Show build configuration"
+	@echo "  make help      - Show this help"
+
+# Show build info
+info:
+	@echo "Version:    $(VERSION)"
+	@echo "Git Hash:   $(GIT_HASH)"
+	@echo "Build Date: $(BUILD_DATE)"
+	@echo "OS:         $(UNAME_S)"
+	@echo "CC:         $(CC)"
+	@echo "CFLAGS:     $(CFLAGS)"
+	@echo "LDFLAGS:    $(LDFLAGS)"
+ifeq ($(UNAME_S),Darwin)
+	@echo "Audio:      CoreAudio"
+else
+ifneq ($(PIPEWIRE_CFLAGS),)
+	@echo "Audio:      PipeWire"
+endif
+ifneq ($(PULSE_CFLAGS),)
+	@echo "Audio:      PulseAudio"
+endif
+endif
 
 # Build frame-based dancer (default)
 all: $(TARGET)
@@ -98,6 +141,15 @@ $(TARGET): $(OBJS)
 # Build braille skeleton dancer
 braille: clean-objs $(BRAILLE_OBJS)
 	$(CC) $(BRAILLE_OBJS) -o $(TARGET) $(LDFLAGS)
+
+# Build and run
+run: braille
+	./$(TARGET)
+
+# Debug build and run in gdb
+debug: CFLAGS += -O0 -DDEBUG
+debug: clean braille
+	gdb ./$(TARGET)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
