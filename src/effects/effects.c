@@ -250,3 +250,7 @@ bool effects_trails_enabled(EffectsManager *fx) {
 bool effects_breathing_enabled(EffectsManager *fx) {
     return fx && fx->enhancements.breathing_enabled;
 }
+
+ParticleSystem* effects_get_particle_system(EffectsManager *fx) {
+    return fx ? fx->particles : NULL;
+}

@@ -100,4 +100,7 @@ bool effects_particles_enabled(EffectsManager *fx);
 bool effects_trails_enabled(EffectsManager *fx);
 bool effects_breathing_enabled(EffectsManager *fx);
 
+/* v3.0: Get particle system for background effects */
+ParticleSystem* effects_get_particle_system(EffectsManager *fx);
+
 #endif /* EFFECTS_H */

@@ -251,6 +251,11 @@ int dancer_get_particle_count(void) {
     return (effects && effects->particles) ? particles_get_active_count(effects->particles) : 0;
 }
 
+/* v3.0: Get particle system for background effects */
+ParticleSystem* dancer_get_particle_system(void) {
+    return effects ? effects_get_particle_system(effects) : NULL;
+}
+
 void calculate_bands(double *cava_out, int num_bars,
                      double *bass, double *mid, double *treble) {
     *bass = *mid = *treble = 0.0;

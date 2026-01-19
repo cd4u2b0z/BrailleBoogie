@@ -46,3 +46,7 @@ void dancer_update_with_rhythm(struct dancer_state *state,
 // Get current rhythm info
 float dancer_get_beat_phase(void);
 float dancer_get_bpm(void);
+
+// v3.0: Get particle system for background effects
+#include "effects/particles.h"
+ParticleSystem* dancer_get_particle_system(void);

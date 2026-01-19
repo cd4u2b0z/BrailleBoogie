@@ -1,6 +1,6 @@
 // ASCII Dancer - Terminal Audio Visualizer
 // Main entry point and event loop
-// v2.4+: Help overlay and more themes (particles, trails, breathing)
+// v3.0: Advanced BPM tracking, energy analysis, background effects
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,12 +12,18 @@
 
 #include "audio/audio.h"
 #include "fft/cavacore.h"
+#include "effects/particles.h"  // Include first for ParticleSystem typedef
 #include "dancer/dancer.h"
 #include "render/render.h"
 #include "render/colors.h"
 #include "config/config.h"
 #include "audio/rhythm.h"
 #include "ui/help_overlay.h"
+
+// v3.0 modules
+#include "audio/bpm_tracker.h"
+#include "audio/energy_analyzer.h"
+#include "effects/background_fx.h"
 
 // Default configuration
 #define DEFAULT_RATE 44100
@@ -252,6 +258,16 @@ int main(int argc, char *argv[]) {
     // Initialize help overlay (v2.4+)
     HelpOverlay *help = help_overlay_create();
 
+    // Initialize v3.0 modules
+    BPMTracker *bpm_tracker = bpm_tracker_create();
+    EnergyAnalyzer *energy = energy_analyzer_create();
+    
+    // Background FX needs particle system - get from dancer
+    ParticleSystem *particles = dancer_get_particle_system();
+    BackgroundFX *bg_fx = background_fx_create(particles);
+    BackgroundFXType current_bg_effect = BG_NONE;
+    bool bg_fx_enabled = false;
+
     // Initialize ncurses with 256-color support
     if (render_init() != 0) {
         fprintf(stderr, "Failed to initialize ncurses\n");
@@ -314,6 +330,43 @@ int main(int argc, char *argv[]) {
         double bass, mid, treble;
         calculate_bands(cava_out, NUM_BARS, &bass, &mid, &treble);
 
+        // v3.0: Update BPM tracker on detected onsets
+        float dt = 1.0f / target_fps;
+        if (rhythm_onset_detected(rhythm)) {
+            static double elapsed_time = 0.0;
+            elapsed_time += dt;
+            bpm_tracker_tap(bpm_tracker, elapsed_time);
+        }
+        bpm_tracker_update(bpm_tracker, dt);
+
+        // v3.0: Update energy analyzer with frequency bands
+        energy_analyzer_update_bands(energy, 
+            (float)bass * 0.5f,   // sub_bass estimate
+            (float)bass,
+            (float)(bass + mid) * 0.5f,  // low_mid
+            (float)mid,
+            (float)(mid + treble) * 0.5f,  // high_mid
+            (float)treble);
+        
+        // Update pace based on BPM and onset strength
+        energy_analyzer_update_pace(energy,
+            bpm_tracker_get_bpm(bpm_tracker),
+            rhythm_get_onset_strength(rhythm),
+            rhythm_onset_detected(rhythm) ? 1.0f : 0.0f);
+
+        // v3.0: Update background effects
+        if (bg_fx_enabled && bg_fx) {
+            background_fx_update(bg_fx, dt);
+            background_fx_update_audio(bg_fx,
+                energy_analyzer_get_smoothed(energy),
+                (float)bass, (float)mid, (float)treble,
+                rhythm_onset_detected(rhythm));
+            background_fx_update_bands(bg_fx,
+                (float)bass * 0.5f, (float)bass,
+                (float)(bass + mid) * 0.5f, (float)mid,
+                (float)(mid + treble) * 0.5f, (float)treble);
+        }
+
         // Update dancer animation
         // Update dancer with rhythm info (v2.3)
         dancer_update_with_rhythm(&dancer, bass, mid, treble,
@@ -334,24 +387,28 @@ int main(int argc, char *argv[]) {
             getmaxyx(stdscr, sh, sw);
             help_overlay_render(help, sw, sh,
                               theme_names[cfg.theme],
-                              rhythm_get_bpm(rhythm), sensitivity,
+                              bpm_tracker_get_bpm(bpm_tracker), sensitivity,
                               show_ground, show_shadow,
                               dancer_get_particles(), dancer_get_trails(),
                               dancer_get_breathing());
         }
 
+        // v3.0: Enhanced info display with confidence and energy zone
+        const char *zone_name = energy_analyzer_get_zone_name(energy);
+        float bpm_conf = bpm_tracker_get_confidence(bpm_tracker);
         snprintf(info_text, sizeof(info_text),
-                 "sens:%.1f %.0fbpm %s %s%s%s%s%s p:%d | %s",
-                 sensitivity,
-                 rhythm_get_bpm(rhythm),
+                 "%.0fbpm(%d%%) %s %s %s%s%s%s%s%s p:%d",
+                 bpm_tracker_get_bpm(bpm_tracker),
+                 (int)(bpm_conf * 100),
+                 zone_name,
                  theme_names[cfg.theme],
                  show_ground ? "[G]" : "",
                  show_shadow ? "[R]" : "",
                  dancer_get_particles() ? "[P]" : "",
                  dancer_get_trails() ? "[M]" : "",
                  dancer_get_breathing() ? "[B]" : "",
-                 dancer_get_particle_count(),
-                 use_pulse ? "PulseAudio" : "PipeWire");
+                 bg_fx_enabled ? "[FX]" : "",
+                 dancer_get_particle_count());
         render_info(info_text);
         render_refresh();
 
@@ -399,6 +456,24 @@ int main(int argc, char *argv[]) {
         case 'B':
             dancer_set_breathing(!dancer_get_breathing());
             break;
+        case 'f':
+        case 'F':
+            // v3.0: Toggle background effects
+            bg_fx_enabled = !bg_fx_enabled;
+            background_fx_enable(bg_fx, bg_fx_enabled);
+            break;
+        case 'e':
+        case 'E':
+            // v3.0: Cycle background effect type
+            if (bg_fx) {
+                current_bg_effect = (current_bg_effect + 1) % BG_COUNT;
+                background_fx_set_type(bg_fx, current_bg_effect);
+                if (current_bg_effect != BG_NONE && !bg_fx_enabled) {
+                    bg_fx_enabled = true;
+                    background_fx_enable(bg_fx, true);
+                }
+            }
+            break;
         case 'd':
         case 'D':
             debug_mode = !debug_mode;
@@ -424,6 +499,12 @@ int main(int argc, char *argv[]) {
     dancer_cleanup();
     rhythm_destroy(rhythm);
     help_overlay_destroy(help);
+    
+    // v3.0 cleanup
+    bpm_tracker_destroy(bpm_tracker);
+    energy_analyzer_destroy(energy);
+    background_fx_destroy(bg_fx);
+    
     free(cava_out);
     free(audio.source);
     free(audio.cava_in);
