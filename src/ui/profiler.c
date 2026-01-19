@@ -153,9 +153,9 @@ void profiler_render(Profiler *prof) {
     
     for (int i = 0; i < 20; i++) {
         if (i < bar_len) {
-            mvaddch(y + 14, x + 2 + i, '█');
+            mvaddstr(y + 14, x + 2 + i, "#");
         } else {
-            mvaddch(y + 14, x + 2 + i, '░');
+            mvaddstr(y + 14, x + 2 + i, ".");
         }
     }
     

@@ -151,7 +151,7 @@ static void render_centered(int y, int x, int width, const char *text) {
 void help_overlay_render(HelpOverlay *help,
                          int screen_width, int screen_height,
                          const char *theme_name,
-                         float bpm, float sensitivity,
+                         float bpm, float sensitivity __attribute__((unused)),
                          bool ground_on, bool shadow_on,
                          bool particles_on, bool trails_on,
                          bool breathing_on) {

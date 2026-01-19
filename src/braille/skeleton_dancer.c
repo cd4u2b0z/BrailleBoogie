@@ -33,13 +33,13 @@ float ease_in_out_elastic(float t) {
     return (powf(2.0f, -20.0f * t + 10.0f) * sinf((20.0f * t - 11.125f) * c5)) / 2.0f + 1.0f;
 }
 
-static float ease_out_back(float t) {
+static float __attribute__((unused)) ease_out_back(float t) {
     float c1 = 1.70158f;
     float c3 = c1 + 1.0f;
     return 1.0f + c3 * powf(t - 1.0f, 3.0f) + c1 * powf(t - 1.0f, 2.0f);
 }
 
-static float ease_out_bounce(float t) {
+static float __attribute__((unused)) ease_out_bounce(float t) {
     float n1 = 7.5625f;
     float d1 = 2.75f;
     if (t < 1.0f / d1) {
@@ -73,7 +73,7 @@ Joint joint_lerp(Joint a, Joint b, float t) {
     return (Joint){a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t};
 }
 
-static Joint joint_lerp_eased(Joint a, Joint b, float t) {
+static Joint __attribute__((unused)) joint_lerp_eased(Joint a, Joint b, float t) {
     float et = ease_in_out_cubic(t);
     return joint_lerp(a, b, et);
 }
@@ -1792,7 +1792,7 @@ static void generate_pose_variations(SkeletonDancer *d) {
         Pose mirror = *base;
         char name[32];
         snprintf(name, sizeof(name), "%s_mir", base->name);
-        strncpy(mirror.name, name, sizeof(mirror.name) - 1);
+        snprintf(mirror.name, sizeof(mirror.name), "%s", name);
         
         /* Swap arm joints */
         Joint temp;

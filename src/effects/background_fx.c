@@ -204,9 +204,9 @@ void background_fx_update(BackgroundFX *fx, float dt) {
 
 void background_fx_update_audio(BackgroundFX *fx,
                                float energy,
-                               float bass,
-                               float mid,
-                               float treble,
+                               float bass __attribute__((unused)),
+                               float mid __attribute__((unused)),
+                               float treble __attribute__((unused)),
                                bool beat_hit) {
     if (!fx || !fx->enabled) return;
     
@@ -226,9 +226,9 @@ void background_fx_update_audio(BackgroundFX *fx,
 
 void background_fx_update_bands(BackgroundFX *fx,
                                float sub_bass,
-                               float bass,
+                               float bass __attribute__((unused)),
                                float low_mid,
-                               float mid,
+                               float mid __attribute__((unused)),
                                float high_mid,
                                float treble) {
     if (!fx) return;
@@ -274,7 +274,7 @@ void background_fx_generate_ambient(BackgroundFX *fx) {
     }
 }
 
-void background_fx_generate_wave(BackgroundFX *fx, float energy) {
+void background_fx_generate_wave(BackgroundFX *fx, float energy __attribute__((unused))) {
     if (!fx || !fx->particles) return;
     
     /* Spawn wave particles from bottom of screen */
@@ -325,7 +325,7 @@ void background_fx_generate_burst(BackgroundFX *fx, float energy) {
     if (!fx || !fx->particles) return;
     
     /* Explosion at dancer position */
-    int count = (int)(fx->burst.burst_particles * energy * fx->intensity);
+    /* count removed - unused */
     particles_emit_beat_burst(fx->particles, 
                              (float)fx->aura.dancer_x,
                              (float)fx->aura.dancer_y,

@@ -55,7 +55,7 @@ void effects_destroy(EffectsManager *fx) {
     free(fx);
 }
 
-void effects_update(EffectsManager *fx, float dt, float bass, float treble, float energy) {
+void effects_update(EffectsManager *fx, float dt, float bass __attribute__((unused)), float treble __attribute__((unused)), float energy) {
     if (!fx || !fx->enabled) return;
     
     /* Update particles */

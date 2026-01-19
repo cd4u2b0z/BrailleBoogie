@@ -13,7 +13,7 @@
 
 typedef struct {
     bool recording;
-    char output_dir[512];
+    char output_dir[256];
     int frame_number;
     int width;
     int height;

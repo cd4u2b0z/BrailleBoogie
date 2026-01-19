@@ -545,7 +545,7 @@ int particles_get_active_count(ParticleSystem *ps) {
     return ps ? ps->active_count : 0;
 }
 
-void particles_set_body_mask(ParticleSystem *ps, float center_x, float center_y,
+void particles_set_body_mask(ParticleSystem *ps, float center_x, float center_y __attribute__((unused)),
                              float head_y, float foot_y, float radius) {
     if (!ps) return;
     ps->body_center_x = center_x;

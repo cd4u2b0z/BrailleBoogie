@@ -146,14 +146,14 @@ static void update_beat_phase(RhythmState *state, bool onset) {
     
     if (onset) {
         // An onset was detected - update phase tracking
-        double time_since_last = now - state->last_beat_time;
+        double __attribute__((unused)) time_since_last = now - state->last_beat_time;
         
         // If this onset is close to our prediction, we're on track
         if (state->predicted_next_beat > 0) {
             double prediction_error = now - state->predicted_next_beat;
             
             // Adjust phase correction based on error
-            if (fabsf(prediction_error) < beat_period * 0.3f) {
+            if (fabs(prediction_error) < beat_period * 0.3f) {
                 // Good prediction - minor correction
                 state->phase_correction = prediction_error * 0.1f;
             } else {

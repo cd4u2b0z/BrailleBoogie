@@ -59,7 +59,7 @@ void trails_track_all_limbs(MotionTrails *trails) {
     }
 }
 
-void trails_update(MotionTrails *trails, Joint *joints, int num_joints, float dt) {
+void trails_update(MotionTrails *trails, Joint *joints, int num_joints, float dt __attribute__((unused))) {
     if (!trails || !trails->enabled || !joints) return;
     
     trails->frame_count++;

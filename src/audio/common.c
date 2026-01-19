@@ -25,7 +25,7 @@ int write_to_cava_input_buffers(int16_t size, unsigned char *buf, void *data) {
 
     // Convert and store new samples
     int n = 0;
-    for (int i = 0; i < samples * audio->channels; i++) {
+    for (int i = 0; i < (int)(samples * audio->channels); i++) {
         switch (bytes_per_sample) {
         case 1: {
             uint8_t *buf8 = (uint8_t *)&buf[n];

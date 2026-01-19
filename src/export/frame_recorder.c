@@ -36,14 +36,15 @@ FrameRecorder* frame_recorder_create(int width, int height, const char *output_d
     if (!dir || dir[0] == '\0') {
         const char *home = getenv("HOME");
         if (home) {
-            static char default_dir[512];
+            static char default_dir[256];
             snprintf(default_dir, sizeof(default_dir), "%s/asciidancer_recordings", home);
             dir = default_dir;
         } else {
             dir = "/tmp/asciidancer_recordings";
         }
     }
-    strncpy(rec->output_dir, dir, sizeof(rec->output_dir) - 1);
+    memset(rec->output_dir, 0, sizeof(rec->output_dir));
+    snprintf(rec->output_dir, sizeof(rec->output_dir), "%s", dir);
     
     /* Allocate frame buffer */
     rec->frame_buffer = calloc(height, sizeof(char*));
@@ -94,13 +95,13 @@ void frame_recorder_start(FrameRecorder *recorder) {
     /* Create timestamped subdirectory */
     time_t now = time(NULL);
     struct tm *t = localtime(&now);
-    char subdir[256];
-    snprintf(subdir, sizeof(subdir), "%s/recording_%04d%02d%02d_%02d%02d%02d",
+    char subdir[sizeof(recorder->output_dir)];
+    int written = snprintf(subdir, sizeof(subdir), "%s/recording_%04d%02d%02d_%02d%02d%02d",
              recorder->output_dir,
              t->tm_year + 1900, t->tm_mon + 1, t->tm_mday,
              t->tm_hour, t->tm_min, t->tm_sec);
-    
-    strncpy(recorder->output_dir, subdir, sizeof(recorder->output_dir) - 1);
+    if (written >= (int)sizeof(subdir)) subdir[sizeof(subdir) - 1] = '\0';
+    memcpy(recorder->output_dir, subdir, sizeof(recorder->output_dir));
     ensure_directory(recorder->output_dir);
 }
 
@@ -111,7 +112,7 @@ void frame_recorder_stop(FrameRecorder *recorder) {
     recorder->duration = ((double)clock() / CLOCKS_PER_SEC) - recorder->start_time;
     
     /* Write summary file */
-    char summary_path[600];
+    char summary_path[280];
     snprintf(summary_path, sizeof(summary_path), "%s/summary.txt", recorder->output_dir);
     
     FILE *f = fopen(summary_path, "w");
@@ -137,7 +138,7 @@ void frame_recorder_capture(FrameRecorder *recorder) {
     if (!recorder || !recorder->recording) return;
     
     /* Capture current screen content using ncurses */
-    char filename[600];
+    char filename[280];
     snprintf(filename, sizeof(filename), "%s/frame_%06d.txt", 
              recorder->output_dir, recorder->frame_number);
     
@@ -151,7 +152,7 @@ void frame_recorder_capture(FrameRecorder *recorder) {
             
             /* Extract character and attributes */
             char c = ch & A_CHARTEXT;
-            attr_t attrs = ch & A_ATTRIBUTES;
+            (void)(ch & A_ATTRIBUTES);  /* attrs reserved for future use */
             short pair_num = PAIR_NUMBER(ch);
             
             /* Write with ANSI color codes if colored */

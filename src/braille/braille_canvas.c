@@ -38,7 +38,7 @@ BrailleCanvas* braille_canvas_create(int cell_width, int cell_height) {
     }
     
     /* Initialize cells to empty braille */
-    for (int i = 0; i < cell_count; i++) {
+    for (size_t i = 0; i < cell_count; i++) {
         canvas->cells[i] = BRAILLE_BASE;
     }
     

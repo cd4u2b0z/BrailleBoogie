@@ -23,9 +23,12 @@ static int has_256_colors = 0;
 
 /* Helper: create color from RGB (0-5 each) */
 static short rgb_to_256(int r, int g, int b) {
-    if (r < 0) r = 0; if (r > 5) r = 5;
-    if (g < 0) g = 0; if (g > 5) g = 5;
-    if (b < 0) b = 0; if (b > 5) b = 5;
+    if (r < 0) r = 0;
+    if (r > 5) r = 5;
+    if (g < 0) g = 0;
+    if (g > 5) g = 5;
+    if (b < 0) b = 0;
+    if (b > 5) b = 5;
     return 16 + 36 * r + 6 * g + b;
 }
 
