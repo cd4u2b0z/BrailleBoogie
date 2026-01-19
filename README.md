@@ -8,12 +8,6 @@
 
 **Latest:** 228 base poses 󰸞 Genre-specific dance styles 󰝚 Moonwalk, ballet, breakdance, and more
 
----
-
-**Topics:** `terminal` · `audio-visualizer` · `music-visualization` · `ascii-art` · `braille` · `ncurses` · `fft` · `c` · `tui` · `real-time` · `audio-reactive` · `linux` · `macos` · `animation` · `particle-effects` · `dancing` · `pipewire` · `pulseaudio` · `coreaudio`
-
----
-
 ![Linux](https://img.shields.io/badge/Linux-FCC624?style=flat&logo=linux&logoColor=black)
 ![macOS](https://img.shields.io/badge/macOS-000000?style=flat&logo=apple&logoColor=white)
 ![C](https://img.shields.io/badge/C-A8B9CC?style=flat&logo=c&logoColor=black)
