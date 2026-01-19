@@ -1,66 +1,56 @@
-# ASCII Dancer Demo
+# Braille-Boogie Demo
+# https://github.com/cd4u2b0z/Braille-Boogie
+
 Output assets/demo.gif
-Set FontSize 14
+Set FontSize 16
 Set Width 1400
 Set Height 900
-Set Theme "Dracula"
+Set Theme "Catppuccin Mocha"
+Set Framerate 24
 
-Type "cd ~/projects/asciidancer"
+# Already built, just run demo mode
+Type "./braille-boogie --demo"
 Enter
-Sleep 500ms
+Sleep 1s
 
-Type "make braille"
-Enter
+# Let it dance with all effects enabled
+Sleep 6s
+
+# Cycle through themes to show variety
+Type "t"
+Sleep 2s
+Type "t"
+Sleep 2s
+Type "t"
 Sleep 2s
 
-Type "./asciidancer"
-Enter
-Sleep 3s
-
-# Let it dance and show the animation
-Sleep 5s
-
-# Show help overlay
-Type "?"
-Sleep 2s
-
-# Dismiss help
-Type "?"
-Sleep 1s
-
-# Cycle through some themes
-Type "t"
-Sleep 1s
-Type "t"
-Sleep 1s
-Type "t"
-Sleep 1s
-
-# Toggle particles
+# Toggle particles off then on
 Type "p"
-Sleep 2s
+Sleep 1.5s
+Type "p"
+Sleep 1.5s
 
-# Toggle motion trails
+# Toggle trails off then on  
 Type "m"
-Sleep 2s
+Sleep 1.5s
+Type "m"
+Sleep 1.5s
 
 # Cycle background effects
-Type "f"
-Sleep 1s
 Type "e"
 Sleep 2s
 Type "e"
 Sleep 2s
 
-# Show profiler
-Type "i"
+# Show help overlay briefly
+Type "?"
 Sleep 2s
-Type "i"
+Type "?"
 Sleep 1s
 
-# Let it dance more
-Sleep 3s
+# Final dance showcase
+Sleep 4s
 
-# Quit
+# Quit gracefully
 Type "q"
 Sleep 500ms
