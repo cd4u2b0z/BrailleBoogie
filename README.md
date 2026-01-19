@@ -110,6 +110,9 @@ make
 | `t` | Cycle color theme |
 | `g` | Toggle ground line |
 | `r` | Toggle shadow/reflection |
+| `p` | Toggle particles |
+| `m` | Toggle motion trails |
+| `b` | Toggle breathing animation |
 
 ### Configuration
 

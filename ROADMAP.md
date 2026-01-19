@@ -4,9 +4,9 @@ Development roadmap and feature tracking for asciidancer.
 
 ---
 
-## 📊 Current Status: v2.1.0
+## 📊 Current Status: v2.2.0
 
-**Rating: 8.5/10** — Polished visualizer with themes and configuration
+**Rating: 9.0/10** — Feature-rich visualizer with full effects system
 
 ### ✅ Completed Features (v2.0 + v2.1)
 - [x] 36 unique poses across 7 energy categories
@@ -54,22 +54,22 @@ Development roadmap and feature tracking for asciidancer.
 
 ---
 
-## 🎨 v2.2 — Visual Feast
+## ✅ v2.2 — Visual Feast (COMPLETED)
 
-**Goal: 8.5 → 9.0** | Medium effort, high visual impact
+**Achieved: 8.5 → 9.0** | Released 2026-01-18
 
-- [ ] **Braille particle system**
+- [x] **Braille particle system**
   - Spark particles on bass hits
   - Particle velocity, gravity, lifetime
   - Fade out with decreasing brightness
   - Configurable spawn count/spread
 
-- [ ] **Motion trails**
+- [x] **Motion trails**
   - Store last N joint positions
   - Draw ghost limbs with decreasing opacity
   - Trail length based on movement speed
 
-- [ ] **Visual enhancements**
+- [x] **Visual enhancements**
   - Subtle idle breathing animation
   - Floor "vibration" on heavy bass
   - Glow effect on intense movement (double-draw offset)
@@ -155,10 +155,10 @@ Development roadmap and feature tracking for asciidancer.
 |---------|--------|---------------|
 | v2.0.0 | ✅ Released | 7.5 |
 | v2.1.0 | ✅ Released | 8.5 |
-| v2.2.0 | 📋 Planned | 9.0 |
+| v2.2.0 | ✅ Released | 9.0 |
 | v2.3.0 | 📋 Planned | 9.0+ |
 | v3.0.0 | 💭 Future | 10 |
 
 ---
 
-<sub>Last updated: 2026-01-19</sub>
+<sub>Last updated: 2026-01-18</sub>

@@ -16,7 +16,10 @@ COMMON_SRCS = src/main.c \
               src/fft/cavacore.c \
               src/config/config.c \
               src/render/colors.c \
-              src/render/render_new.c
+              src/render/render_new.c \
+              src/effects/particles.c \
+              src/effects/trails.c \
+              src/effects/effects.c
 
 # Frame-based dancer (uses your custom braille frames)
 FRAME_SRCS = src/dancer/dancer_rhythm.c

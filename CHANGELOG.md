@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.1.0] - 2026-01-19
 
+## [2.2.0] - 2026-01-18
+
+### Added
+- **🎆 Particle System** - Dynamic visual effects
+  - Spark particles on bass hits
+  - Physics simulation (velocity, gravity, drag)
+  - Lifetime with fade out
+  - Multiple spawn patterns (burst, fountain, explosion, sparkle)
+  - Toggle with `p` key
+
+- **👻 Motion Trails** - Ghost effect on movement
+  - Stores history of joint positions
+  - Renders trailing ghost limbs with fading opacity
+  - Velocity-based trail intensity
+  - Toggle with `m` key
+
+- **✨ Visual Enhancements**
+  - Breathing animation (subtle idle motion)
+  - Floor vibration on heavy bass
+  - Screen shake on intense bass hits
+  - Glow effect on high energy
+  - Toggle breathing with `b` key
+
+### Technical
+- New directory: `src/effects/`
+- New files: `particles.h/c`, `trails.h/c`, `effects.h/c`
+- Updated: `braille_dancer.c`, `dancer.h`, `main.c`
+- Effects automatically trigger from audio analysis
+
+---
+
 ### Added
 - **🎨 256-Color Theme System** - Rich visual customization
   - 7 built-in themes: Default, Fire, Ice, Neon, Matrix, Synthwave, Mono

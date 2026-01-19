@@ -1,6 +1,6 @@
 // ASCII Dancer - Terminal Audio Visualizer
 // Main entry point and event loop
-// v2.1: Config file, 256-color themes, ground/shadow
+// v2.2: Effects system (particles, trails, breathing)
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -53,6 +53,9 @@ static void print_usage(const char *name) {
     printf("  t                     Cycle through themes\n");
     printf("  g                     Toggle ground line\n");
     printf("  r                     Toggle reflection/shadow\n");
+    printf("  p                     Toggle particles\n");
+    printf("  m                     Toggle motion trails\n");
+    printf("  b                     Toggle breathing animation\n");
     printf("\n");
     printf("Themes:\n");
     for (int i = 0; i <= THEME_MONO; i++) {
@@ -301,13 +304,15 @@ int main(int argc, char *argv[]) {
         render_bars(bass, mid, treble);
 
         snprintf(info_text, sizeof(info_text),
-                 "q=quit +/-=sens(%.1f) t=theme(%s) g=ground r=shadow %s%s | %s",
+                 "sens:%.1f %s %s%s%s%s%s | %s",
                  sensitivity,
                  theme_names[cfg.theme],
                  show_ground ? "[G]" : "",
                  show_shadow ? "[R]" : "",
+                 dancer_get_particles() ? "[P]" : "",
+                 dancer_get_trails() ? "[M]" : "",
+                 dancer_get_breathing() ? "[B]" : "",
                  use_pulse ? "PulseAudio" : "PipeWire");
-        render_info(info_text);
         render_refresh();
 
         // Handle input
@@ -341,6 +346,18 @@ int main(int argc, char *argv[]) {
         case 'R':
             show_shadow = !show_shadow;
             render_set_shadow(show_shadow);
+            break;
+        case 'p':
+        case 'P':
+            dancer_set_particles(!dancer_get_particles());
+            break;
+        case 'm':
+        case 'M':
+            dancer_set_trails(!dancer_get_trails());
+            break;
+        case 'b':
+        case 'B':
+            dancer_set_breathing(!dancer_get_breathing());
             break;
         case 'd':
         case 'D':
