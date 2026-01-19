@@ -322,16 +322,11 @@ int main(int argc, char *argv[]) {
     BackgroundFXType current_bg_effect = BG_NONE;
     bool bg_fx_enabled = false;
 
-    // Initialize v3.0+ modules
-    int sw, sh;
-    getmaxyx(stdscr, sh, sw);
-    FrameRecorder *recorder = frame_recorder_create(sw, sh, NULL);  // NULL = use timestamp dir
+    // v3.0+ modules (initialized after ncurses)
+    FrameRecorder *recorder = NULL;
     bool recording = false;
-    
-    Profiler *profiler = profiler_create();
+    Profiler *profiler = NULL;
     bool show_profiler = false;
-    
-    // Profiler timing
     double audio_start = 0, update_start = 0, render_start = 0;
 
     // Initialize ncurses with 256-color support
@@ -350,6 +345,12 @@ int main(int argc, char *argv[]) {
     render_set_theme(cfg.theme);
     render_set_ground(show_ground);
     render_set_shadow(show_shadow);
+
+    // Initialize v3.0+ modules (needs ncurses for screen size)
+    int sw, sh;
+    getmaxyx(stdscr, sh, sw);
+    recorder = frame_recorder_create(sw, sh, NULL);  // NULL = use timestamp dir
+    profiler = profiler_create();
 
     // Main loop timing
     struct timespec frame_time = {
