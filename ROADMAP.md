@@ -81,7 +81,7 @@ Development roadmap and feature tracking for asciidancer.
   - Anticipate upcoming beats
   - Smoother rhythm synchronization
 
-- [ ] **Frequency band improvements**
+- [x] **Frequency band improvements**
   - More granular band separation
   - Configurable crossover frequencies
 

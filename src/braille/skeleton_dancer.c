@@ -663,27 +663,33 @@ void skeleton_dancer_update(SkeletonDancer *d, float bass, float mid, float treb
     analyze_audio(&d->audio, bass, mid, treble, dt);
     AudioAnalysis *a = &d->audio;
     
+    /* SILENCE DETECTION: If energy is very low, don't animate much */
+    float silence_threshold = 0.02f;
+    bool is_silent = (a->energy_smooth < silence_threshold);
+    
     /* Determine animation tempo based on energy and detected BPM */
     float base_tempo = 0.3f;
     if (a->beat.bpm_estimate > 60.0f && a->beat.bpm_estimate < 200.0f) {
         base_tempo = a->beat.bpm_estimate / 120.0f;  /* Normalize around 120 BPM */
     }
-    d->tempo = base_tempo * (0.5f + a->energy_smooth);
+    /* Tempo scales down to 0 when silent */
+    float energy_factor = is_silent ? 0.0f : (0.5f + a->energy_smooth);
+    d->tempo = base_tempo * energy_factor;
     
-    /* Calculate pose duration based on tempo */
-    float min_duration = 0.3f / d->tempo;
-    float max_duration = 1.5f / d->tempo;
+    /* Calculate pose duration based on tempo - avoid division by zero */
+    float min_duration = (d->tempo > 0.01f) ? (0.3f / d->tempo) : 10.0f;
+    float max_duration = (d->tempo > 0.01f) ? (1.5f / d->tempo) : 30.0f;
     d->pose_duration = min_duration + (1.0f - a->energy_smooth) * (max_duration - min_duration);
     
-    /* Check if we should transition to a new pose */
+    /* Check if we should transition to a new pose - only if not silent */
     bool should_transition = false;
     
-    if (d->time_in_pose > d->pose_duration) {
+    if (!is_silent && d->time_in_pose > d->pose_duration) {
         should_transition = true;
     }
     
-    /* Beat can trigger early transition at high energy */
-    if (a->beat.beat_detected && a->energy_smooth > 0.5f && d->time_in_pose > 0.2f) {
+    /* Beat can trigger early transition at high energy - only if not silent */
+    if (!is_silent && a->beat.beat_detected && a->energy_smooth > 0.5f && d->time_in_pose > 0.2f) {
         if (random_float(d) < 0.4f) {
             should_transition = true;
         }
@@ -702,29 +708,30 @@ void skeleton_dancer_update(SkeletonDancer *d, float bass, float mid, float treb
     d->blend += dt * blend_speed;
     if (d->blend > 1.0f) d->blend = 1.0f;
     
-    /* Calculate modifiers based on frequency bands */
+    /* Calculate modifiers based on frequency bands - scale by energy when silent */
+    float mod_scale = is_silent ? 0.0f : 1.0f;
     
     /* Head bob - follows mid frequencies */
-    float target_bob = sinf(d->time_total * 4.0f * d->tempo) * 0.02f * a->mid_smooth;
+    float target_bob = sinf(d->time_total * 4.0f * d->tempo) * 0.02f * a->mid_smooth * mod_scale;
     d->head_bob = d->head_bob * 0.9f + target_bob * 0.1f;
     
     /* Arm swing - treble makes arms more active */
     float arm_phase = d->time_total * 3.0f * d->tempo;
-    d->arm_swing_l = sinf(arm_phase) * 0.03f * a->treble_smooth;
-    d->arm_swing_r = sinf(arm_phase + M_PI) * 0.03f * a->treble_smooth;
+    d->arm_swing_l = sinf(arm_phase) * 0.03f * a->treble_smooth * mod_scale;
+    d->arm_swing_r = sinf(arm_phase + M_PI) * 0.03f * a->treble_smooth * mod_scale;
     
     /* Hip sway - bass drives hip movement */
     float hip_phase = d->time_total * 2.0f * d->tempo;
-    d->hip_sway = sinf(hip_phase) * 0.02f * a->bass_smooth;
+    d->hip_sway = sinf(hip_phase) * 0.02f * a->bass_smooth * mod_scale;
     
     /* Bounce - on beats */
-    if (a->beat.beat_detected) {
+    if (!is_silent && a->beat.beat_detected) {
         d->bounce = 0.03f * a->energy_smooth;
     }
     d->bounce *= 0.85f;  /* Decay */
     
     /* Lean - follows spectral centroid */
-    d->lean = (a->spectral_centroid - 0.5f) * 0.03f;
+    d->lean = (a->spectral_centroid - 0.5f) * 0.03f * mod_scale;
     
     /* Interpolate base pose */
     Pose *p1 = &d->poses[d->pose_primary];
@@ -902,24 +909,30 @@ void skeleton_dancer_update_with_phase(SkeletonDancer *d,
     analyze_audio(&d->audio, bass, mid, treble, dt);
     AudioAnalysis *a = &d->audio;
     
+    /* SILENCE DETECTION: If energy is very low, don't animate much */
+    float silence_threshold = 0.02f;
+    bool is_silent = (a->energy_smooth < silence_threshold);
+    
     /* Use provided BPM instead of estimated */
     if (bpm > 60.0f && bpm < 200.0f) {
         a->beat.bpm_estimate = bpm;
     }
     
-    /* Animation tempo locked to BPM */
+    /* Animation tempo locked to BPM, but reduced/stopped when silent */
     float base_tempo = bpm / 120.0f;  /* Normalize around 120 BPM */
-    d->tempo = base_tempo * (0.5f + a->energy_smooth * 0.5f);
+    float energy_factor = is_silent ? 0.0f : (0.5f + a->energy_smooth * 0.5f);
+    d->tempo = base_tempo * energy_factor;
     
     /* Calculate pose duration based on tempo */
-    float min_duration = 0.3f / d->tempo;
-    float max_duration = 1.0f / d->tempo;
+    float min_duration = (d->tempo > 0.01f) ? (0.3f / d->tempo) : 10.0f;
+    float max_duration = (d->tempo > 0.01f) ? (1.0f / d->tempo) : 30.0f;
     d->pose_duration = min_duration + (1.0f - a->energy_smooth) * (max_duration - min_duration);
     
     /* Check if we should transition to a new pose */
     bool should_transition = false;
     
-    if (d->time_in_pose > d->pose_duration) {
+    /* Only transition if there's audio */
+    if (!is_silent && d->time_in_pose > d->pose_duration) {
         should_transition = true;
     }
     
@@ -927,7 +940,7 @@ void skeleton_dancer_update_with_phase(SkeletonDancer *d,
     /* Trigger near the beat (phase close to 0 or 1) */
     bool on_beat = (beat_phase < 0.08f || beat_phase > 0.92f);
     
-    if (on_beat && a->energy_smooth > 0.4f && d->time_in_pose > 0.15f) {
+    if (!is_silent && on_beat && a->energy_smooth > 0.4f && d->time_in_pose > 0.15f) {
         if (random_float(d) < 0.5f) {  /* Higher chance for rhythm-locked transitions */
             should_transition = true;
         }
@@ -946,29 +959,32 @@ void skeleton_dancer_update_with_phase(SkeletonDancer *d,
     d->blend += dt * blend_speed;
     if (d->blend > 1.0f) d->blend = 1.0f;
     
-    /* Use beat_phase for rhythmic modifiers */
+    /* Use beat_phase for rhythmic modifiers - but only when not silent */
     float beat_sin = sinf(beat_phase * 2.0f * M_PI);  /* Oscillates with beat */
     float beat_bounce = (beat_phase < 0.1f) ? (1.0f - beat_phase * 10.0f) : 0.0f;
     
+    /* Scale all modifiers by energy (becomes 0 when silent) */
+    float mod_scale = is_silent ? 0.0f : 1.0f;
+    
     /* Head bob - locked to beat phase */
-    float target_bob = beat_sin * 0.015f * a->mid_smooth;
+    float target_bob = beat_sin * 0.015f * a->mid_smooth * mod_scale;
     d->head_bob = d->head_bob * 0.85f + target_bob * 0.15f;
     
     /* Arm swing - quarter beat offset for groove feel */
     float arm_phase = beat_phase + 0.25f;  /* Offset by quarter beat */
     if (arm_phase > 1.0f) arm_phase -= 1.0f;
-    d->arm_swing_l = sinf(arm_phase * 2.0f * M_PI) * 0.025f * a->treble_smooth;
-    d->arm_swing_r = sinf((arm_phase + 0.5f) * 2.0f * M_PI) * 0.025f * a->treble_smooth;
+    d->arm_swing_l = sinf(arm_phase * 2.0f * M_PI) * 0.025f * a->treble_smooth * mod_scale;
+    d->arm_swing_r = sinf((arm_phase + 0.5f) * 2.0f * M_PI) * 0.025f * a->treble_smooth * mod_scale;
     
     /* Hip sway - half beat timing */
-    d->hip_sway = sinf(beat_phase * M_PI) * 0.02f * a->bass_smooth;
+    d->hip_sway = sinf(beat_phase * M_PI) * 0.02f * a->bass_smooth * mod_scale;
     
     /* Bounce - sharper attack on beat, locked to phase */
-    float target_bounce = beat_bounce * 0.04f * a->energy_smooth;
+    float target_bounce = beat_bounce * 0.04f * a->energy_smooth * mod_scale;
     d->bounce = d->bounce * 0.8f + target_bounce * 0.2f;
     
     /* Lean - follows spectral centroid */
-    d->lean = (a->spectral_centroid - 0.5f) * 0.02f;
+    d->lean = (a->spectral_centroid - 0.5f) * 0.02f * mod_scale;
     
     /* Interpolate base pose */
     Pose *p1 = &d->poses[d->pose_primary];

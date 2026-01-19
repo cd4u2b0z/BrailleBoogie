@@ -13,7 +13,7 @@ MotionTrails* trails_create(void) {
     if (!trails) return NULL;
     
     trails->fade_rate = 0.85f;       /* Each step fades to 70% */
-    trails->min_velocity = 1.0f;    /* Minimum pixels/frame to show */
+    trails->min_velocity = 0.3f;    /* Minimum pixels/frame to show - lowered for sensitivity */
     trails->trail_length = 6;       /* Default trail length */
     trails->adaptive_length = true;
     trails->enabled = true;
