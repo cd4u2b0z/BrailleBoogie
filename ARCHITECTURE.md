@@ -299,7 +299,7 @@ py = joint.y * (height * 0.8) + (height * 0.1);
 
 ## 󰒓 Configuration
 
-**File:** `~/.config/asciidancer/config.ini`
+**File:** `~/.config/braille-boogie/config.ini`
 
 ```ini
 [audio]

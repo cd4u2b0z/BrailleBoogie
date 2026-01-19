@@ -54,7 +54,7 @@ void getPulseDefaultSink(void *data) {
 
     m_pulseaudio_mainloop = pa_mainloop_new();
     mainloop_api = pa_mainloop_get_api(m_pulseaudio_mainloop);
-    pulseaudio_context = pa_context_new(mainloop_api, "asciidancer device list");
+    pulseaudio_context = pa_context_new(mainloop_api, "braille-boogie device list");
 
     pa_context_connect(pulseaudio_context, NULL, PA_CONTEXT_NOFLAGS, NULL);
     pa_context_set_state_callback(pulseaudio_context, pulseaudio_context_state_callback,
@@ -91,8 +91,8 @@ void *input_pulse(void *data) {
     pa_simple *s = NULL;
     int error;
 
-    if (!(s = pa_simple_new(NULL, "asciidancer", PA_STREAM_RECORD, audio->source,
-                            "audio for asciidancer", &ss, NULL, &pb, &error))) {
+    if (!(s = pa_simple_new(NULL, "braille-boogie", PA_STREAM_RECORD, audio->source,
+                            "audio for braille-boogie", &ss, NULL, &pb, &error))) {
         sprintf(audio->error_message,
                 "Could not open PulseAudio source: %s, %s.\n"
                 "To find a list of sources run 'pacmd list-sources'\n",

@@ -337,7 +337,7 @@ All effects feature:
   - `--theme <name>` CLI option
 
 -  **Configuration System** — Persistent settings via INI files
-  - Auto-loads from `~/.config/asciidancer/config.ini`
+  - Auto-loads from `~/.config/braille-boogie/config.ini`
   - Sections: [audio], [visual], [terminal], [animation], [debug]
   - `--config <file>` CLI option for custom config paths
   - `config_create_default()` generates sample config

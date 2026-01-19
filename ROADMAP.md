@@ -1,6 +1,6 @@
-# 󰛤 ASCII Dancer Roadmap
+# 󰛤 Braille Boogie Roadmap
 
-Development roadmap and feature tracking for asciidancer.
+Development roadmap and feature tracking for braille-boogie.
 
 ---
 
@@ -18,7 +18,7 @@ Development roadmap and feature tracking for asciidancer.
 - [x] PipeWire + PulseAudio audio backends
 - [x] Anti-repetition pose history (avoids recent 8 poses)
 - [x] Easing functions (quad, cubic, bounce, elastic)
-- [x] INI config file (`~/.config/asciidancer/config.ini`)
+- [x] INI config file (`~/.config/braille-boogie/config.ini`)
 - [x] 256-color gradients with 13 themes
 - [x] Ground line with shadow/reflection
 - [x] Adaptive terminal scaling (SIGWINCH resize)

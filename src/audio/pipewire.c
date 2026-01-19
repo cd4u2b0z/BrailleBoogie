@@ -215,7 +215,7 @@ void *input_pipewire(void *audiodata) {
                                      .channels = data.cava_audio->channels));
     }
 
-    data.stream = pw_stream_new_simple(pw_main_loop_get_loop(data.loop), "asciidancer", props,
+    data.stream = pw_stream_new_simple(pw_main_loop_get_loop(data.loop), "braille-boogie", props,
                                        &stream_events, &data);
 
     int status = pw_stream_connect(data.stream, PW_DIRECTION_INPUT, PW_ID_ANY,

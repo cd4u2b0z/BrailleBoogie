@@ -1,5 +1,5 @@
 /*
- * Configuration system for asciidancer v2.4
+ * Configuration system for braille-boogie v3.2
  * INI file parser and runtime settings
  */
 
@@ -82,9 +82,9 @@ char *config_get_default_path(void) {
     const char *xdg_config = getenv("XDG_CONFIG_HOME");
     
     if (xdg_config && xdg_config[0]) {
-        snprintf(path, sizeof(path), "%s/asciidancer/config.ini", xdg_config);
+        snprintf(path, sizeof(path), "%s/braille-boogie/config.ini", xdg_config);
     } else if (home && home[0]) {
-        snprintf(path, sizeof(path), "%s/.config/asciidancer/config.ini", home);
+        snprintf(path, sizeof(path), "%s/.config/braille-boogie/config.ini", home);
     } else {
         return NULL;
     }
@@ -226,7 +226,7 @@ int config_save(const Config *cfg, const char *path) {
     FILE *f = fopen(path, "w");
     if (!f) return -1;
     
-    fprintf(f, "# asciidancer configuration v2.4\n\n");
+    fprintf(f, "# braille-boogie configuration v3.2\n\n");
     
     fprintf(f, "[audio]\n");
     fprintf(f, "source = %s\n", cfg->audio_source);

@@ -88,7 +88,7 @@ endif
 # Default: frame-based dancer
 SRCS = $(COMMON_SRCS) $(FRAME_SRCS) $(AUDIO_SRCS)
 OBJS = $(SRCS:.c=.o)
-TARGET = asciidancer
+TARGET = braille-boogie
 
 # Braille target sources (includes v2.4, v3.0, and v3.0+ modules)
 BRAILLE_ALL_SRCS = $(COMMON_SRCS) $(BRAILLE_SRCS) $(V24_SRCS) $(V30_SRCS) $(V30P_SRCS) $(AUDIO_SRCS)

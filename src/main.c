@@ -57,11 +57,12 @@ static void print_usage(const char *name) {
 #endif
     printf("  -f, --fps <n>         Target framerate (default: %d)\n", cfg.target_fps);
     printf("  -t, --theme <name>    Color theme (13 available, press t to cycle)\n");
-    printf("  -c, --config <file>   Config file path (default: ~/.config/asciidancer/config.ini)\n");
+    printf("  -c, --config <file>   Config file path (default: ~/.config/braille-boogie/config.ini)\n");
     printf("      --no-ground       Disable ground line\n");
     printf("      --no-shadow       Disable shadow/reflection\n");
     printf("      --pick-source     Show audio source picker menu\n");
     printf("      --show-caps       Display terminal capabilities\n");
+    printf("      --demo            Demo mode: all visual effects enabled\n");
     printf("  -h, --help            Show this help\n");
     printf("\n");
     printf("Controls:\n");
@@ -124,12 +125,14 @@ int main(int argc, char *argv[]) {
         {"no-shadow",   no_argument,       0, 'S'},
         {"pick-source", no_argument,       0, 'P'},
         {"show-caps",   no_argument,       0, 'C'},
+        {"demo",        no_argument,       0, 'D'},
         {"help",        no_argument,       0, 'h'},
         {0, 0, 0, 0}
     };
 
     int show_picker = 0;
     int show_caps = 0;
+    int demo_mode = 0;
 
     int opt;
     while ((opt = getopt_long(argc, argv, "s:pf:t:c:h", long_options, NULL)) != -1) {
@@ -164,6 +167,9 @@ int main(int argc, char *argv[]) {
             break;
         case 'C':
             show_caps = 1;
+            break;
+        case 'D':
+            demo_mode = 1;
             break;
         case 'S':
             show_shadow = 0;
@@ -354,6 +360,18 @@ int main(int argc, char *argv[]) {
     render_set_shadow(show_shadow);
     dancer_set_ground(show_ground);   // Braille dancer ground
     dancer_set_shadow(show_shadow);   // Braille dancer shadow
+
+    // Demo mode: enable all visual effects for maximum wow
+    if (demo_mode) {
+        dancer_set_particles(true);
+        dancer_set_trails(true);
+        dancer_set_breathing(true);
+        bg_fx_enabled = true;
+        background_fx_enable(bg_fx, true);
+        background_fx_set_type(bg_fx, BG_AMBIENT_FIELD);
+        cfg.theme = THEME_SYNTHWAVE;  // Eye-catching theme
+        render_set_theme(cfg.theme);
+    }
 
     // Initialize v3.0+ modules (needs ncurses for screen size)
     int sw, sh;

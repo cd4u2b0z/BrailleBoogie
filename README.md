@@ -115,8 +115,8 @@ brew install fftw ncurses pkg-config
 
 ```bash
 # Clone the repository
-git clone https://github.com/cd4u2b0z/asciidancer.git
-cd asciidancer
+git clone https://github.com/cd4u2b0z/braille-boogie.git
+cd braille-boogie
 
 # Build the braille skeleton dancer (recommended)
 make braille
@@ -171,7 +171,11 @@ This will generate `assets/demo.gif` showcasing the dancer in action.
 ## 󰙨 Usage
 
 ```bash
-./asciidancer
+# Basic - just run it
+./braille-boogie
+
+# Demo mode - all effects enabled (recommended first run!)
+./braille-boogie --demo
 ```
 
 ### 󰘳 Options
@@ -186,6 +190,7 @@ This will generate `assets/demo.gif` showcasing the dancer in action.
 | `--no-shadow` | Disable shadow/reflection |
 | `--pick-source` | 󰐕 Interactive audio source picker |
 | `--show-caps` | 󰐕 Display terminal capabilities |
+| `--demo` | 󰐕 Demo mode: all effects enabled |
 
 ### 󰌌 Runtime Controls
 
@@ -247,7 +252,7 @@ Press `t` to cycle through all themes, or press `?` for the interactive help ove
 
 ## 󰒓 Configuration
 
-Config file: `~/.config/asciidancer/config.ini`
+Config file: `~/.config/braille-boogie/config.ini`
 
 ```ini
 [audio]
@@ -352,7 +357,7 @@ Unicode Braille (U+2800–U+28FF) provides **2×4 subpixel resolution**:
 ## 󰉋 Project Structure
 
 ```
-asciidancer/
+braille-boogie/
 ├─ 󰉋 src/
 │   ├─ 󰈮 main.c              # Entry point, main loop
 │   ├─ 󰈮 constants.h         # v3.2 Centralized magic numbers
@@ -424,7 +429,13 @@ Audio capture and FFT processing adapted from cava (Console-based Audio Visualiz
 
 ## 󰓎 Contributing
 
-Contributions are welcome! Whether it's:
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for:
+- Build instructions for all platforms
+- Code style guide
+- Pull request guidelines
+- Project structure overview
+
+Whether it's:
 - 󰋄 New dance poses or genres
 - 󰎈 Audio backend improvements
 - 󱐋 Visual effects and themes

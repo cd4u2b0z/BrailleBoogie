@@ -43,10 +43,10 @@ Record terminal frames for creating GIFs or videos:
 
 **Workflow:**
 ```bash
-# Start asciidancer, press X to record
-./asciidancer
+# Start braille-boogie, press X to record
+./braille-boogie
 
-# Find recordings in ~/asciidancer_recordings/
+# Find recordings in ~/braille-boogie_recordings/
 # Convert with your preferred tool
 ```
 
@@ -66,7 +66,7 @@ Press **I** to toggle real-time performance overlay:
 Launch with `--pick-source` to select audio input:
 
 ```bash
-./asciidancer --pick-source
+./braille-boogie --pick-source
 ```
 
 Interactively select from available PulseAudio/PipeWire sources.
@@ -75,7 +75,7 @@ Interactively select from available PulseAudio/PipeWire sources.
 Check what your terminal supports:
 
 ```bash
-./asciidancer --show-caps
+./braille-boogie --show-caps
 ```
 
 Detects:
