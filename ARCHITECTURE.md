@@ -1,6 +1,6 @@
 # 󰙵 Architecture
 
-Technical architecture documentation for ASCII Dancer v2.4.
+Technical architecture documentation for ASCII Dancer v3.2.
 
 ---
 
@@ -8,7 +8,7 @@ Technical architecture documentation for ASCII Dancer v2.4.
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
-│                        ASCII Dancer v2.4                          │
+│                        ASCII Dancer v3.2                          │
 ├──────────────────────────────────────────────────────────────────┤
 │  Audio Layer      FFT Layer      Control Bus      Animation      │
 │  ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐   │
@@ -21,6 +21,7 @@ Technical architecture documentation for ASCII Dancer v2.4.
 │                              ┌──────────┴────┐    ┌────┴──────┐  │
 │                              │  Particles    │    │    UI     │  │
 │                              │  Trails       │    │ Reactive  │  │
+│                              │  Background   │    │ Profiler  │  │
 │                              └───────────────┘    └───────────┘  │
 │                                         │               │         │
 │                                         └───────┬───────┘         │
@@ -32,10 +33,11 @@ Technical architecture documentation for ASCII Dancer v2.4.
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-**v2.4 Architecture:**
-Audio → FFT → **Control Bus** → {Skeleton, Particles, UI}
+**v3.2 Architecture:**
+Audio → FFT → **Control Bus** → {Skeleton, Particles, Background FX, UI}
 - **Control Bus**: Unified signals with envelope smoothing
-- **Separation of concerns**: Animation, effects, and UI all consume from bus
+- **Genre Detection**: Automatic style classification for easter egg poses
+- **228 Poses**: 13 categories including 6 genre-specific dance styles
 - **Configurable smoothing**: Fast for dancer, medium for particles, slow for UI
 
 ---
@@ -45,11 +47,15 @@ Audio → FFT → **Control Bus** → {Skeleton, Particles, UI}
 ```
 src/
 ├── 󰈮 main.c                 # Entry point, main loop
+├── 󰈮 constants.h            # v3.2: Centralized magic numbers (~150 params)
 │
 ├── 󰎈 audio/                 # Audio capture
 │   ├── pipewire.c          # PipeWire stream
 │   ├── pulse.c             # PulseAudio capture
 │   ├── rhythm.c            # Beat detection (v2.3)
+│   ├── bpm_tracker.c       # v3.0: Advanced BPM with confidence/stability
+│   ├── energy_analyzer.c   # v3.0: RMS energy, intensity zones
+│   ├── audio_picker.c      # v3.0+: Interactive source selection
 │   └── common.c            # Shared utilities
 │
 ├── 󰓾 fft/                   # Frequency analysis
@@ -59,14 +65,18 @@ src/
 │   └── control_bus.c       # Unified audio signals
 │
 ├── 󰕮 braille/               # Rendering
-│   ├── braille_canvas.c    # Pixel→braille
+│   ├── braille_canvas.c    # Pixel→braille + scanline flood fill
 │   ├── braille_dancer.c    # Interface
-│   └── skeleton_dancer.c   # Physics/poses/constraints
+│   └── skeleton_dancer.c   # Physics/poses/constraints (228 poses)
 │
 ├── 󱐋 effects/               # Visual effects
 │   ├── particles.c         # Particle system + repulsion
 │   ├── trails.c            # Motion trails
+│   ├── background_fx.c     # v3.0: 7 background effect modes
 │   └── effects.c           # Manager
+│
+├── 󰎁 export/                # v3.0+: Recording/export
+│   └── frame_recorder.c    # Frame capture for GIF/video
 │
 ├── 󰍹 render/                # Terminal output
 │   ├── render_new.c        # ncurses
@@ -74,7 +84,13 @@ src/
 │
 ├── 󰌌 ui/                    # v2.4+: Reactive UI & Help
 │   ├── ui_reactive.c       # Border pulse, energy meter, beat indicator
-│   └── help_overlay.c      # Interactive help (? or F1)
+│   ├── help_overlay.c      # Interactive help (? or F1)
+│   ├── profiler.c          # v3.0+: Performance profiler (thread-safe)
+│   └── term_caps.c         # v3.0+: Terminal capabilities
+│
+├── 󰚹 dancer/                # Dancer API
+│   ├── dancer.h            # Header
+│   └── legacy/             # v3.2: Archived legacy code
 │
 └── 󰒓 config/                # Configuration
     └── config.c            # INI parser
@@ -121,7 +137,7 @@ src/
 - Stiffness: 0.1-0.5
 - Damping: 0.7-0.9
 
-**36 Poses** across 7 categories:
+**228 Poses** across 13 categories:
 | Category | Energy Range | Count |
 |----------|--------------|-------|
 | IDLE | 0.00-0.15 | 4 |
@@ -131,6 +147,20 @@ src/
 | INTENSE | 0.75-1.00 | 6 |
 | BASS_HIT | Transient | 4 |
 | TREBLE_ACCENT | Transient | 4 |
+| MOONWALK | Hip-hop/Pop | 4 |
+| BALLET | Classical | 5 |
+| BREAKDANCE | Hip-hop | 4 |
+| WALTZ | Classical | 4 |
+| ROBOT | Electronic | 5 |
+| HEADBANG | Rock | 4 |
+
+**Genre Detection (v3.2):**
+- Electronic: High treble ratio, fast BPM → Robot poses
+- Hip-Hop: Strong bass, mid-tempo → Moonwalk, Breakdance
+- Rock: High energy, guitar range → Headbang
+- Classical: Low energy, balanced → Ballet, Waltz
+- Pop: Balanced, steady beat → Moonwalk
+- Easter eggs trigger ~15% of the time when genre detected
 
 ---
 
@@ -156,10 +186,24 @@ src/
 - `braille_draw_circle()` — Midpoint circle
 - `braille_draw_bezier_quad()` — Quadratic curves
 - `braille_draw_bezier_cubic()` — Cubic curves
+- `braille_flood_fill()` — Scanline algorithm (v3.2: bounded O(4096) queue)
+
+**Flood Fill (v3.2):**
+```c
+// Scanline flood fill with bounded memory
+#define FLOOD_FILL_MAX_QUEUE 4096
+
+typedef struct {
+    int x, y;
+} FillPoint;
+
+// Uses horizontal scanlines instead of recursive per-pixel
+// Prevents stack overflow on large fills
+```
 
 ---
 
-## 󱐋 Effects System (v2.2)
+## 󱐋 Effects System (v3.0)
 
 ### 󰸞 Particles
 - Pool of 256 particles (no allocations)
@@ -180,6 +224,18 @@ p->brightness = p->lifetime / p->max_life;
 - Ring buffer per joint (8 positions)
 - Velocity-based recording
 - Alpha fade over time
+
+### 󱐋 Background Effects (v3.0)
+7 spectacular effect modes:
+| Mode | Description |
+|------|-------------|
+| Ambient Field | Floating twinkling particles |
+| Spectral Waves | Frequency-reactive pulses |
+| Energy Aura | Pulsing ring around dancer |
+| Beat Burst | Synchronized explosions |
+| Frequency Ribbons | Vertical frequency bars |
+| Particle Rain | Falling particles from top |
+| Spiral Vortex | Rotating spiral arms |
 
 ### 󰓾 Coordinate Transform
 ```c
@@ -343,3 +399,116 @@ if (dist < body_radius) {
     particle.vx += (dx / dist) * repulsion * push_factor;
     particle.vy += (dy / dist) * repulsion * push_factor;
 }
+```
+
+### Genre Detection (v3.2)
+```c
+// Classify genre from audio features
+GenreStyle detect_genre(float bass_ratio, float treble_ratio, 
+                        float energy, float bpm) {
+    if (treble_ratio > 0.4f && bpm > 120)
+        return GENRE_ELECTRONIC;
+    if (bass_ratio > 0.45f && bpm >= 80 && bpm <= 115)
+        return GENRE_HIPHOP;
+    if (energy > 0.6f && treble_ratio > 0.3f)
+        return GENRE_ROCK;
+    if (energy < 0.3f)
+        return GENRE_CLASSICAL;
+    return GENRE_POP;
+}
+```
+
+### Easter Egg Poses (v3.2)
+```c
+// ~15% chance to trigger genre-specific moves
+if (genre != GENRE_UNKNOWN && (rand() % 100) < 15) {
+    switch (genre) {
+        case GENRE_ELECTRONIC: return random_robot_pose();
+        case GENRE_HIPHOP:     return random_moonwalk_or_breakdance();
+        case GENRE_ROCK:       return random_headbang_pose();
+        case GENRE_CLASSICAL:  return random_ballet_or_waltz();
+        // ...
+    }
+}
+```
+
+---
+
+## 󰈮 Constants Header (v3.2)
+
+Centralized tuning parameters in `constants.h`:
+
+```c
+// BPM tracking
+#define BPM_MIN                 40
+#define BPM_MAX                 240
+#define BPM_LOCK_CONFIDENCE     0.7f
+#define BPM_LOCK_STABILITY      0.85f
+
+// Energy thresholds
+#define ENERGY_SILENT           0.02f
+#define ENERGY_LOW              0.15f
+#define ENERGY_MEDIUM           0.35f
+#define ENERGY_HIGH             0.55f
+#define ENERGY_PEAK             0.75f
+
+// Animation timing
+#define POSE_TRANSITION_FAST    0.15f
+#define POSE_TRANSITION_NORMAL  0.25f
+#define POSE_TRANSITION_SLOW    0.4f
+
+// Physics
+#define JOINT_STIFFNESS         0.15f
+#define JOINT_DAMPING           0.85f
+#define BREATHING_AMPLITUDE     0.02f
+```
+
+---
+
+## 󰾆 Performance Profiler (v3.0+)
+
+Thread-safe timing with atomic operations:
+
+```c
+// Thread-safe frame timing
+static _Atomic double frame_start_time = 0.0;
+
+void profiler_frame_start(void) {
+    atomic_store(&frame_start_time, get_time_ms());
+}
+
+double profiler_get_frame_time(void) {
+    return get_time_ms() - atomic_load(&frame_start_time);
+}
+```
+
+**Metrics tracked:**
+- Current/avg/min/max FPS
+- Audio processing time
+- Update cycle time
+- Render cycle time
+- Particle count
+- Trail count
+
+---
+
+## 󰘸 Scanline Flood Fill (v3.2)
+
+Memory-bounded flood fill algorithm:
+
+```c
+#define FLOOD_FILL_MAX_QUEUE 4096
+
+// Instead of recursive per-pixel fill:
+// 1. Push seed point to queue
+// 2. For each point, scan left/right to find span
+// 3. Fill entire span
+// 4. Queue points above/below span
+// 5. Repeat until queue empty or limit reached
+
+// Advantages:
+// - O(4096) worst case vs O(width*height)
+// - No stack overflow on large fills
+// - Predictable memory usage
+```
+

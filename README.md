@@ -1,12 +1,12 @@
-<- {motion} = {motion} = Original work by Dr. Baklava • github.com/cd4u2b0z • 2026 -->
+<!-- {motion} = {motion} = Original work by Dr. Baklava • github.com/cd4u2b0z • 2026 -->
 
-#  Braille-Boogie v3.2
+# 󰝚 Braille-Boogie v3.2
 
 **A terminal-based audio visualizer with a dancing Unicode Braille character that reacts to music in real-time.**
 
-> ⚠️ **Early Development** — This project is in its infancy and may contain bugs. Contributions, bug reports, and feedback are welcome!
+> 󰀨 **Early Development** — This project is in its infancy and may contain bugs. Contributions, bug reports, and feedback are welcome!
 
-**Latest:** 228 base poses • Genre-specific dance styles • Moonwalk, ballet, breakdance, and more
+**Latest:** 228 base poses 󰸞 Genre-specific dance styles 󰝚 Moonwalk, ballet, breakdance, and more
 
 ![Linux](https://img.shields.io/badge/Linux-FCC624?style=flat&logo=linux&logoColor=black)
 ![C](https://img.shields.io/badge/C-A8B9CC?style=flat&logo=c&logoColor=black)
@@ -21,78 +21,78 @@
 
 ---
 
-##  Features
+## 󰐕 Features
 
-###  Audio-Reactive Animation
+### 󰎈 Audio-Reactive Animation
 - **Real-time frequency analysis** via FFTW3
 - **228 base poses** across 13 categories (~1,190 with procedural variations)
 - **Physics-based animation** with spring-damper joint system
 
-###  Frequency-Specific Movement
+### 󰓾 Frequency-Specific Movement
 | Band | Range | Body Response |
 |------|-------|---------------|
-|  **Bass** | 20-300Hz | Legs, hips, ground stomps |
-|  **Mids** | 300-2kHz | Torso, head bob, bounce |
-|  **Treble** | 2kHz+ | Arms, hands, flourishes |
+| 󰋄 **Bass** | 20-300Hz | Legs, hips, ground stomps |
+| 󰝚 **Mids** | 300-2kHz | Torso, head bob, bounce |
+| 󰋅 **Treble** | 2kHz+ | Arms, hands, flourishes |
 
-###  Visual Effects
+### 󱐋 Visual Effects
 | Effect | Key | Description |
 |--------|-----|-------------|
-|  **Particles** | `p` | Sparks shoot from feet on bass hits |
-|  **Trails** | `m` | Ghost afterimages follow limb movement |
-|  **Breathing** | `b` | Subtle idle animation |
+| 󰸞 **Particles** | `p` | Sparks shoot from feet on bass hits |
+| 󰘵 **Trails** | `m` | Ghost afterimages follow limb movement |
+| 󰌪 **Breathing** | `b` | Subtle idle animation |
 
-###  Genre Detection & Easter Eggs (v3.2)
+### 󰝚 Genre Detection & Easter Eggs (v3.2)
 Automatic genre detection adapts the dancer's style and triggers special moves:
 
 | Genre | Detection | Easter Egg Moves |
 |-------|-----------|------------------|
-|  **Electronic/EDM** | High treble, fast BPM | Robot poses (locks, isolations) |
-|  **Hip-Hop** | Strong bass, mid-tempo | Moonwalk slides, breakdance freezes |
-|  **Rock** | High energy, guitar range | Headbanging, power stances |
-|  **Classical** | Low energy, balanced | Ballet positions, waltz frames |
-|  **Pop** | Balanced energy, steady beat | Moonwalk, smooth transitions |
-|  **Ambient** | Very low energy | Gentle swaying |
+| 󰓃 **Electronic/EDM** | High treble, fast BPM | Robot poses (locks, isolations) |
+| 󰎈 **Hip-Hop** | Strong bass, mid-tempo | Moonwalk slides, breakdance freezes |
+| 󰋄 **Rock** | High energy, guitar range | Headbanging, power stances |
+| 󰎇 **Classical** | Low energy, balanced | Ballet positions, waltz frames |
+| 󰝚 **Pop** | Balanced energy, steady beat | Moonwalk, smooth transitions |
+| 󰺠 **Ambient** | Very low energy | Gentle swaying |
 
 Easter egg moves trigger randomly (~15% chance) when a genre is detected.
 
-###  Smart Animation System
+### 󰔶 Smart Animation System
 - **Beat detection** with BPM estimation
 - **Anti-repetition** pose history (avoids recent 8 poses)
 - **Smooth interpolation** via easing functions
 - **Momentum** and follow-through physics
 
-###  v3.2 Dance Styles
+### 󰝚 v3.2 Dance Styles
 | Style | Poses | Description |
 |-------|-------|-------------|
-| 🚶 **Moonwalk** | 4 | Smooth backward slides, toe stands |
-| 🩰 **Ballet** | 5 | First position, arabesque, plié, relevé |
-| 🤸 **Breakdance** | 4 | Toprocks, freezes, power prep |
-| 💃 **Waltz** | 4 | Frames, turns, rises, sways |
-| 🤖 **Robot** | 5 | Locks, extensions, isolations |
-| 🎸 **Headbang** | 4 | Down strokes, horns up, power stance |
+| 󰛿 **Moonwalk** | 4 | Smooth backward slides, toe stands |
+| 󰴓 **Ballet** | 5 | First position, arabesque, plié, relevé |
+| 󰨊 **Breakdance** | 4 | Toprocks, freezes, power prep |
+| 󰝚 **Waltz** | 4 | Frames, turns, rises, sways |
+| 󰚩 **Robot** | 5 | Locks, extensions, isolations |
+| 󰋄 **Headbang** | 4 | Down strokes, horns up, power stance |
 
-###  Audio Analysis
+### 󰓾 Audio Analysis
 | Feature | Description |
 |---------|-------------|
-| 🎯 **BPM Tracker** | Multi-tap tempo averaging with confidence + stability |
-| 📊 **Energy Analyzer** | RMS energy, intensity zones, spectral features |
-| 🌟 **Background FX** | 7 particle effects (ambient, waves, aura, burst, ribbons, rain, vortex) |
+| 󰾆 **BPM Tracker** | Multi-tap tempo averaging with confidence + stability |
+| 󰄧 **Energy Analyzer** | RMS energy, intensity zones, spectral features |
+| 󰸞 **Background FX** | 7 particle effects (ambient, waves, aura, burst, ribbons, rain, vortex) |
 
-###  v3.0 Background Effects
+### 󱐋 v3.0 Background Effects
 | Effect | Description |
 |--------|-------------|
-| ✨ **Ambient Field** | Floating twinkling particles |
-| 🌊 **Spectral Waves** | Frequency-reactive wave pulses |
-| 💫 **Energy Aura** | Pulsing ring around dancer |
-| 💥 **Beat Burst** | Explosions synchronized to beats |
-| 📊 **Frequency Ribbons** | Vertical frequency bars |
-| 🌧️ **Particle Rain** | Falling particles from top |
-| 🌀 **Spiral Vortex** | Rotating spiral arms |
+| 󰖨 **Ambient Field** | Floating twinkling particles |
+| 󰘸 **Spectral Waves** | Frequency-reactive wave pulses |
+| 󰝁 **Energy Aura** | Pulsing ring around dancer |
+| 󰛲 **Beat Burst** | Explosions synchronized to beats |
+| 󰄧 **Frequency Ribbons** | Vertical frequency bars |
+| 󰖐 **Particle Rain** | Falling particles from top |
+| 󰜁 **Spiral Vortex** | Rotating spiral arms |
 
 ---
 
-##  Dependencies
+## 󰏖 Dependencies
 
 ```bash
 # Arch Linux
@@ -107,7 +107,7 @@ sudo dnf install fftw-devel pulseaudio-libs-devel ncurses-devel pipewire-devel p
 
 ---
 
-##  Building
+## 󰏗 Building
 
 ```bash
 # Clone the repository
@@ -121,7 +121,7 @@ make braille
 make
 ```
 
-###  Generate Demo GIF
+### 󰎁 Generate Demo GIF
 
 Requires [VHS](https://github.com/charmbracelet/vhs) (install with `brew install vhs` or `go install github.com/charmbracelet/vhs@latest`)
 
@@ -133,13 +133,13 @@ This will generate `assets/demo.gif` showcasing the dancer in action.
 
 ---
 
-##  Usage
+## 󰙨 Usage
 
 ```bash
 ./asciidancer
 ```
 
-###  Options
+### 󰘳 Options
 | Flag | Description |
 |------|-------------|
 | `-s, --source <name>` | Audio source (default: auto) |
@@ -149,10 +149,10 @@ This will generate `assets/demo.gif` showcasing the dancer in action.
 | `-c, --config <file>` | Custom config file path |
 | `--no-ground` | Disable ground line |
 | `--no-shadow` | Disable shadow/reflection |
-| `--pick-source` | 🆕 Interactive audio source picker |
-| `--show-caps` | 🆕 Display terminal capabilities |
+| `--pick-source` | 󰐕 Interactive audio source picker |
+| `--show-caps` | 󰐕 Display terminal capabilities |
 
-###  Runtime Controls
+### 󰌌 Runtime Controls
 
 **Core:**
 | Key | Action |
@@ -183,34 +183,34 @@ This will generate `assets/demo.gif` showcasing the dancer in action.
 | `x` | Toggle frame recording (export mode) |
 | `i` | Toggle performance profiler overlay |
 
-###  Color Themes (13 Available)
+### 󰏘 Color Themes (13 Available)
 
 **Original Themes:**
 | Theme | Description |
 |-------|-------------|
-|  `default` | Classic cyan gradient |
-|  `fire` | Red/orange/yellow gradient |
-|  `ice` | Blue/cyan/white gradient |
-|  `neon` | Vibrant magenta/cyan/green |
-|  `matrix` | Green on black |
-|  `synthwave` | Purple/pink gradient |
-|  `mono` | White/gray monochrome |
+| 󰏘 `default` | Classic cyan gradient |
+| 󰈸 `fire` | Red/orange/yellow gradient |
+| 󰖐 `ice` | Blue/cyan/white gradient |
+| 󰓃 `neon` | Vibrant magenta/cyan/green |
+| 󰘧 `matrix` | Green on black |
+| 󰗃 `synthwave` | Purple/pink gradient |
+| 󰏘 `mono` | White/gray monochrome |
 
 **v2.4+ New Themes:**
 | Theme | Description |
 |-------|-------------|
-|  `aurora` 🌌 | Northern lights (green→teal→blue→purple) |
-|  `sunset` 🌅 | Warm evening sky (orange→pink→purple) |
-|  `ocean` 🌊 | Deep sea vibes (navy→teal→aqua→seafoam) |
-|  `candy` 🍬 | Soft pastels (pink→mint→lavender) |
-|  `vapor` 📼 | Intense vaporwave (hot pink→cyan→purple) |
-|  `ember` 🔴 | Glowing coals (dark red→orange→yellow) |
+| 󱝂 `aurora` | Northern lights (green→teal→blue→purple) |
+| 󰖛 `sunset` | Warm evening sky (orange→pink→purple) |
+| 󰘸 `ocean` | Deep sea vibes (navy→teal→aqua→seafoam) |
+| 󰄛 `candy` | Soft pastels (pink→mint→lavender) |
+| 󱥒 `vapor` | Intense vaporwave (hot pink→cyan→purple) |
+| 󰈸 `ember` | Glowing coals (dark red→orange→yellow) |
 
 Press `t` to cycle through all themes, or press `?` for the interactive help overlay.
 
 ---
 
-##  Configuration
+## 󰒓 Configuration
 
 Config file: `~/.config/asciidancer/config.ini`
 
@@ -234,7 +234,7 @@ fps = 60
 
 ---
 
-##  Architecture
+## 󰙵 Architecture
 
 ```
 ┌─────────────────────────────────────┐
@@ -245,37 +245,38 @@ fps = 60
                   ▼
 ┌─────────────────────────────────────┐
 │     cavacore FFT Processing         │
-│  ├  256 frequency bins              │
-│  └  Low-latency analysis            │
+│  ├─ 256 frequency bins              │
+│  └─ Low-latency analysis            │
 └─────────────────────────────────────┘
                   │
                   ▼
 ┌─────────────────────────────────────┐
 │      Skeleton Dancer Engine         │
-│  ├  Beat detection + BPM            │
-│  ├  Style/genre classification      │
-│  ├  Pose selection (36 poses)       │
-│  └  Physics interpolation           │
+│  ├─ Beat detection + BPM            │
+│  ├─ Style/genre classification      │
+│  ├─ Pose selection (228 poses)      │
+│  └─ Physics interpolation           │
 └─────────────────────────────────────┘
                   │
                   ▼
 ┌─────────────────────────────────────┐
-│       Effects System (v2.2)         │
-│  ├  Particle physics simulation     │
-│  ├  Motion trail history            │
-│  └  Visual enhancements             │
+│       Effects System (v3.0)         │
+│  ├─ Particle physics simulation     │
+│  ├─ Motion trail history            │
+│  ├─ Background effects (7 modes)    │
+│  └─ Visual enhancements             │
 └─────────────────────────────────────┘
                   │
                   ▼
 ┌─────────────────────────────────────┐
 │       Braille Canvas Renderer       │
-│  ├  50×52 virtual pixels            │
-│  ├  Bézier curves for limbs         │
-│  └  25×13 terminal output           │
+│  ├─ 50×52 virtual pixels            │
+│  ├─ Bézier curves for limbs         │
+│  └─ 25×13 terminal output           │
 └─────────────────────────────────────┘
 ```
 
-###  Braille Character Magic
+### 󰕮 Braille Character Magic
 
 Unicode Braille (U+2800–U+28FF) provides **2×4 subpixel resolution**:
 
@@ -293,98 +294,99 @@ Unicode Braille (U+2800–U+28FF) provides **2×4 subpixel resolution**:
 
 ---
 
-##  Pose Categories
+## 󰚹 Pose Categories
 
 | Category | Poses | Trigger |
 |----------|-------|---------|
-|  **IDLE** | 4 | Energy < 0.15 |
-|  **CALM** | 5 | Energy 0.15-0.35 |
-|  **GROOVE** | 8 | Energy 0.35-0.55 |
-|  **ENERGETIC** | 7 | Energy 0.55-0.75 |
-|  **INTENSE** | 6 | Energy > 0.75 |
-|  **BASS_HIT** | 4 | Strong bass transient |
-|  **TREBLE_ACCENT** | 4 | High treble spike |
-| 🚶 **MOONWALK** | 4 | Hip-hop/Pop genre detected |
-| 🩰 **BALLET** | 5 | Classical genre detected |
-| 🤸 **BREAKDANCE** | 4 | Hip-hop genre detected |
-| 💃 **WALTZ** | 4 | Classical genre detected |
-| 🤖 **ROBOT** | 5 | Electronic genre detected |
-| 🎸 **HEADBANG** | 4 | Rock genre detected |
+| 󰆴 **IDLE** | 4 | Energy < 0.15 |
+| 󰛿 **CALM** | 5 | Energy 0.15-0.35 |
+| 󰝚 **GROOVE** | 8 | Energy 0.35-0.55 |
+| 󱐋 **ENERGETIC** | 7 | Energy 0.55-0.75 |
+| 󰈸 **INTENSE** | 6 | Energy > 0.75 |
+| 󰋄 **BASS_HIT** | 4 | Strong bass transient |
+| 󰋅 **TREBLE_ACCENT** | 4 | High treble spike |
+| 󰛿 **MOONWALK** | 4 | Hip-hop/Pop genre detected |
+| 󰴓 **BALLET** | 5 | Classical genre detected |
+| 󰨊 **BREAKDANCE** | 4 | Hip-hop genre detected |
+| 󰝚 **WALTZ** | 4 | Classical genre detected |
+| 󰚩 **ROBOT** | 5 | Electronic genre detected |
+| 󰋄 **HEADBANG** | 4 | Rock genre detected |
 
 ---
 
-##  Project Structure
+## 󰉋 Project Structure
 
 ```
 asciidancer/
-├  src/
-│   ├  main.c              # Entry point, main loop
-│   ├  audio/
-│   │   ├  pipewire.c      # PipeWire capture
-│   │   ├  pulse.c         # PulseAudio capture
-│   │   ├  common.c        # Shared audio utilities
-│   │   ├  rhythm.c        # Beat detection, BPM
-│   │   ├  bpm_tracker.c   # v3.0 Advanced BPM tracking
-│   │   ├  energy_analyzer.c # v3.0 Dynamic energy analysis
-│   │   └  audio_picker.c  # v3.0+ Audio source picker
-│   ├  braille/
-│   │   ├  braille_canvas.c # Pixel-to-braille conversion
-│   │   ├  braille_dancer.c # Dancer integration
-│   │   └  skeleton_dancer.c # Physics & poses (v3.2: 228 poses)
-│   ├  effects/
-│   │   ├  particles.c     # Particle system
-│   │   ├  trails.c        # Motion trails
-│   │   ├  effects.c       # Effects manager
-│   │   └  background_fx.c # v3.0 Background effects
-│   ├  export/
-│   │   └  frame_recorder.c # v3.0+ Frame capture for GIF/video
-│   ├  control/
-│   │   └  control_bus.c   # Unified audio signals
-│   ├  ui/
-│   │   ├  ui_reactive.c   # Reactive UI elements
-│   │   ├  help_overlay.c  # Interactive help
-│   │   ├  profiler.c      # v3.0+ Performance profiler
-│   │   └  term_caps.c     # v3.0+ Terminal capabilities
-│   ├  render/
-│   │   ├  render_new.c    # ncurses rendering
-│   │   └  colors.c        # 256-color themes
-│   ├  config/
-│   │   └  config.c        # INI config parser
-│   ├  dancer/
-│   │   ├  dancer.h        # Dancer API
-│   │   └  legacy/         # v3.2: Archived legacy code
-│   └  fft/
-│       └  cavacore.c      # FFT processing
-├  docs/
-│   └  V3_FEATURES.md      # v3.0+ Feature guide
-├  assets/
-│   └  demo.gif            # Demo animation
-├  demo.tape               # VHS demo script
-├  README.md
-├  CHANGELOG.md
-├  ROADMAP.md
-├  ARCHITECTURE.md
-└  Makefile
+├─ 󰉋 src/
+│   ├─ 󰈮 main.c              # Entry point, main loop
+│   ├─ 󰈮 constants.h         # v3.2 Centralized magic numbers
+│   ├─ 󰎈 audio/
+│   │   ├─ pipewire.c        # PipeWire capture
+│   │   ├─ pulse.c           # PulseAudio capture
+│   │   ├─ common.c          # Shared audio utilities
+│   │   ├─ rhythm.c          # Beat detection, BPM
+│   │   ├─ bpm_tracker.c     # v3.0 Advanced BPM tracking
+│   │   ├─ energy_analyzer.c # v3.0 Dynamic energy analysis
+│   │   └─ audio_picker.c    # v3.0+ Audio source picker
+│   ├─ 󰕮 braille/
+│   │   ├─ braille_canvas.c  # Pixel-to-braille + scanline flood fill
+│   │   ├─ braille_dancer.c  # Dancer integration
+│   │   └─ skeleton_dancer.c # Physics & poses (v3.2: 228 poses)
+│   ├─ 󱐋 effects/
+│   │   ├─ particles.c       # Particle system
+│   │   ├─ trails.c          # Motion trails
+│   │   ├─ effects.c         # Effects manager
+│   │   └─ background_fx.c   # v3.0 Background effects
+│   ├─ 󰎁 export/
+│   │   └─ frame_recorder.c  # v3.0+ Frame capture for GIF/video
+│   ├─ 󱓻 control/
+│   │   └─ control_bus.c     # Unified audio signals
+│   ├─ 󰌌 ui/
+│   │   ├─ ui_reactive.c     # Reactive UI elements
+│   │   ├─ help_overlay.c    # Interactive help
+│   │   ├─ profiler.c        # v3.0+ Performance profiler (thread-safe)
+│   │   └─ term_caps.c       # v3.0+ Terminal capabilities
+│   ├─ 󰍹 render/
+│   │   ├─ render_new.c      # ncurses rendering
+│   │   └─ colors.c          # 256-color themes (13 themes)
+│   ├─ 󰒓 config/
+│   │   └─ config.c          # INI config parser
+│   ├─ 󰚹 dancer/
+│   │   ├─ dancer.h          # Dancer API
+│   │   └─ legacy/           # v3.2: Archived legacy code
+│   └─ 󰓾 fft/
+│       └─ cavacore.c        # FFT processing
+├─ 󰈙 docs/
+│   └─ V3_FEATURES.md        # v3.0+ Feature guide
+├─ 󰉏 assets/
+│   └─ demo.gif              # Demo animation
+├─ 󰎁 demo.tape              # VHS demo script
+├─ 󰈙 README.md
+├─ 󰈙 CHANGELOG.md
+├─ 󰈙 ROADMAP.md
+├─ 󰈙 ARCHITECTURE.md
+└─ 󰆍 Makefile
 ```
 
 ---
 
-##  Acknowledgments
+## 󰙅 Acknowledgments
 
 This project stands on the shoulders of giants:
 
-###  [cava](https://github.com/karlstav/cava) by Karl Stavestrand
+### 󰊤 [cava](https://github.com/karlstav/cava) by Karl Stavestrand
 Audio capture and FFT processing adapted from cava (Console-based Audio Visualizer for ALSA).
 
-###  Inspirations
--  **romanm.ch cat animation** — Fluid terminal animation reference
--  **The ncurses library** — Terminal rendering foundation
--  **FFTW3** — Fast Fourier Transform computation
--  **Unicode Consortium** — Braille character specification
+### 󰆃 Inspirations
+- 󰄛 **romanm.ch cat animation** — Fluid terminal animation reference
+- 󰘧 **The ncurses library** — Terminal rendering foundation
+- 󰓾 **FFTW3** — Fast Fourier Transform computation
+- 󰕮 **Unicode Consortium** — Braille character specification
 
 ---
 
-##  License
+## 󰿃 License
 
 MIT License - See [LICENSE](LICENSE) for details.
 
@@ -400,4 +402,4 @@ MIT License - See [LICENSE](LICENSE) for details.
 
 <sub>Original work by **Dr. Baklava** • [github.com/cd4u2b0z](https://github.com/cd4u2b0z) • 2026</sub>
 
-<- {motion} = {motion} = ZHIuYmFrbGF2YQ== -->
+<!-- {motion} = {motion} = ZHIuYmFrbGF2YQ== -->

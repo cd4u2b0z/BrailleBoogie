@@ -1,14 +1,14 @@
-#  ASCII Dancer Roadmap
+# 󰛤 ASCII Dancer Roadmap
 
 Development roadmap and feature tracking for asciidancer.
 
 ---
 
-##  Current Status: v3.2.0 💃
+## 󰐕 Current Status: v3.2.0 󰝚
 
 **Rating: 9.7/10 — 228 poses with genre-specific dance styles**
 
-###  Completed Features
+### 󰄬 Completed Features
 - [x] **228 base poses** across 13 categories (~1,190 with variations)
 - [x] **6 genre-specific dance styles** (moonwalk, ballet, breakdance, waltz, robot, headbang)
 - [x] **Easter egg system** (~15% trigger rate for genre-specific moves)
@@ -43,11 +43,11 @@ Development roadmap and feature tracking for asciidancer.
 
 ---
 
-##  v3.2.0 — Dance Revolution 💃 (COMPLETED)
+## 󰝚 v3.2.0 — Dance Revolution (COMPLETED)
 
 **Achieved: 9.5 → 9.7** | Released 2026-01-19
 
-### 🕺 New Dance Styles
+### 󰛿 New Dance Styles
 - [x] **Moonwalk** (4 poses) — Smooth backward slides with toe stands and glides
 - [x] **Ballet** (5 poses) — Classical positions including arabesque, plié, relevé
 - [x] **Breakdance** (4 poses) — Power moves with toprocks, freezes, prep stances
@@ -55,56 +55,61 @@ Development roadmap and feature tracking for asciidancer.
 - [x] **Robot** (5 poses) — Mechanical locks, isolations, extensions
 - [x] **Headbang** (4 poses) — Rock power stances with horns up
 
-### 🎵 Enhanced Genre Detection
+### 󰎈 Enhanced Genre Detection
 - [x] **Pop style** category added for balanced, steady-beat tracks
 - [x] **Easter egg triggers** — Genre-specific moves activate randomly (~15% chance)
 - [x] **Improved thresholds** for better electronic, hip-hop, rock, classical detection
 - [x] **Genre-pose mapping** — Electronic→Robot, Hip-hop→Moonwalk/Breakdance, etc.
 
-### 📊 Pose System Expansion
+### 󰄧 Pose System Expansion
 - [x] **228 base poses** (up from 36 — 6× increase)
 - [x] **~1,190 total variations** with procedural mirroring
 - [x] **13 pose categories** (added 6 new genre-specific categories)
 
-### 🧹 Code Cleanup
+### 󰧹 Code Quality (v3.2.1)
+- [x] **Thread-safe profiler** — `_Atomic` for cross-thread timing
+- [x] **Centralized constants** — New `constants.h` with ~150 tuning parameters
+- [x] **Scanline flood fill** — Bounded O(4096) memory vs previous O(width*height)
+
+### 󰃢 Code Cleanup
 - [x] **Legacy code archived** — Moved 9 unused files (~1,342 lines) to `src/dancer/legacy/`
 - [x] **Removed stub features** — Cleaned up non-functional visualizer code
 - [x] **API compatibility maintained** — Stub functions retained for integrations
 
 ---
 
-##  v3.0.1 — Production Tools (COMPLETED)
+## 󰎁 v3.0.1 — Production Tools (COMPLETED)
 
 **Achieved: 9.9 → 9.5 (realistic)** | Released 2026-01-19
 
-### 🎬 Export & Recording
+### 󰎁 Export & Recording
 - [x] Frame recorder with ANSI color preservation
 - [x] Timestamped recording directories
 - [x] GIF/video export workflow support
 
-### 📊 Performance Profiler
+### 󰾆 Performance Profiler
 - [x] Real-time FPS tracking (current/avg/min/max)
 - [x] Component timing breakdown (audio/update/render)
 - [x] Particle and trail count monitoring
 - [x] Visual performance bar (green/yellow/red zones)
 
-### 🎵 Audio Source Picker
+### 󰎈 Audio Source Picker
 - [x] PulseAudio/PipeWire source enumeration
 - [x] Interactive selection menu
 - [x] --pick-source CLI flag
 
-### 🖥️ Terminal Detection
+### 󰍹 Terminal Detection
 - [x] Sixel graphics support detection
 - [x] Kitty protocol detection
 - [x] iTerm2 inline image detection
 - [x] True color (24-bit) verification
 - [x] --show-caps CLI flag
 
-##  v3.0 — Big Audio Upgrade (COMPLETED)
+## 󰸞 v3.0 — Big Audio Upgrade (COMPLETED)
 
 **Achieved: 9.7 → 9.9** | Released 2026-01-18
 
-### 🎯 Advanced BPM Tracker
+### 󰾆 Advanced BPM Tracker
 - [x] Multi-tap tempo averaging with histogram clustering
 - [x] Confidence scoring (0-1) for BPM reliability
 - [x] Stability tracking over time
@@ -113,7 +118,7 @@ Development roadmap and feature tracking for asciidancer.
 - [x] 40-240 BPM range (expanded from 60-200)
 - [x] Adaptive tracking for gradual tempo changes
 
-### 📊 Dynamic Energy Analyzer
+### 󰄧 Dynamic Energy Analyzer
 - [x] RMS energy calculation
 - [x] Peak detection and envelope follower
 - [x] 5 intensity zones (Silent, Low, Medium, High, Peak)
@@ -123,7 +128,7 @@ Development roadmap and feature tracking for asciidancer.
 - [x] Adaptive thresholds based on history
 - [x] 6-band energy tracking
 
-### 🌟 Background Particle Effects
+### 󱐋 Background Particle Effects
 - [x] 7 spectacular effect modes
 - [x] Ambient Field (floating twinkling particles)
 - [x] Spectral Waves (frequency-reactive pulses)
@@ -135,7 +140,7 @@ Development roadmap and feature tracking for asciidancer.
 - [x] Intensity and speed control
 - [x] Full audio reactivity integration
 
-##  v2.1 — Quick Polish (COMPLETED)
+## 󰏘 v2.1 — Quick Polish (COMPLETED)
 
 **Achieved: 7.5 → 8.5** | Released 2026-01-19
 
@@ -146,7 +151,7 @@ Development roadmap and feature tracking for asciidancer.
 
 ---
 
-##  v2.2 — Visual Feast (COMPLETED)
+## 󰸞 v2.2 — Visual Feast (COMPLETED)
 
 **Achieved: 8.5 → 9.0** | Released 2026-01-18
 
@@ -168,7 +173,7 @@ Development roadmap and feature tracking for asciidancer.
 
 ---
 
-##  v2.3 — Audio Upgrade ✅
+## 󰎈 v2.3 — Audio Upgrade (COMPLETED)
 
 **Goal: Tighter rhythm response**
 
@@ -193,7 +198,7 @@ Development roadmap and feature tracking for asciidancer.
 
 ---
 
-##  v2.4 — Polish & UX ✅
+## 󱓻 v2.4 — Polish & UX (COMPLETED)
 
 **Achieved: 9.0 → 9.5** | Released 2026-01-18
 
@@ -219,14 +224,14 @@ Development roadmap and feature tracking for asciidancer.
   - Outward repulsion from body center
   - Dynamic spawn parameters based on audio
 
-- [x] **Help overlay** (`?` key) — ✅ Completed in v2.4+
+- [x] **Help overlay** (`?` key) — Completed in v2.4+
 - [ ] **Audio source picker** — Deferred to v2.5
 - [ ] **Recording mode** — Deferred to v3.0
-- [x] **More themes** (6 new) — ✅ Completed in v2.4+
+- [x] **More themes** (6 new) — Completed in v2.4+
 
 ---
 
-##  v2.4+ — Help & Themes (COMPLETED)
+## 󰌌 v2.4+ — Help & Themes (COMPLETED)
 
 **Achieved: 9.5 → 9.7** | Released 2026-01-18
 
@@ -237,21 +242,21 @@ Development roadmap and feature tracking for asciidancer.
   - Box-drawing UI with live status
 
 - [x] **6 new color themes** (13 total)
-  - Aurora 🌌 (northern lights)
-  - Sunset 🌅 (warm gradient)
-  - Ocean 🌊 (deep sea)
-  - Candy 🍬 (soft pastels)
-  - Vapor 📼 (intense vaporwave)
-  - Ember 🔴 (glowing coals)
+  - 󱝂 Aurora (northern lights)
+  - 󰖛 Sunset (warm gradient)
+  - 󰘸 Ocean (deep sea)
+  - 󰄛 Candy (soft pastels)
+  - 󱥒 Vapor (intense vaporwave)
+  - 󰈸 Ember (glowing coals)
 
 - [x] **Theme system improvements**
   - THEME_COUNT enum for cleaner iteration
-  - Better preview descriptions with emojis
+  - Better preview descriptions
   - All use 256-color xterm palette
 
 ---
 
-##  v3.0 — Multi-Dancer & Effects
+## 󰐕 v4.0 — Multi-Dancer & Effects (PLANNED)
 
 **Goal: Visual spectacle**
 
@@ -270,7 +275,7 @@ Development roadmap and feature tracking for asciidancer.
 
 ---
 
-##  Future Ideas
+## 󰆃 Future Ideas
 
 - [ ] **MIDI input support** — React to MIDI notes
 - [ ] **OSC protocol** — External control interface
@@ -282,10 +287,14 @@ Development roadmap and feature tracking for asciidancer.
 
 ---
 
-##  Version History
+## 󰔏 Version History
 
 | Version | Date | Highlights |
 |---------|------|------------|
+| v3.2.0 | 2026-01-19 | 228 poses, genre-specific dance styles, code quality |
+| v3.0.1 | 2026-01-19 | Production tools, profiler, export |
+| v3.0.0 | 2026-01-18 | BPM tracker, energy analyzer, background FX |
+| v2.4.0 | 2026-01-18 | Control bus, UI reactivity, help overlay |
 | v2.2.0 | 2026-01-18 | Particles, trails, visual effects |
 | v2.1.0 | 2026-01-19 | Config, themes, ground/shadow |
 | v2.0.0 | 2026-01-18 | Braille skeleton, physics |
