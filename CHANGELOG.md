@@ -9,6 +9,59 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## 🛠️ v3.0.1 - Production Tools (January 2026)
+
+### 🎬 Frame Recording & Export
+- **Frame recorder** — Capture terminal frames to timestamped directories
+- **ANSI text export** — Preserve colors for post-processing
+- **GIF/video workflow** — Compatible with asciinema, agg, or vhs tools
+- Press `x` to start/stop recording
+
+### 📊 Performance Profiler
+- **Real-time FPS display** — Current, average, min, max
+- **Component timing** — Audio, update, render breakdown in ms
+- **Particle/trail counts** — Live object monitoring
+- **Visual performance bar** — Green/yellow/red zone indicators
+- Press `i` to toggle profiler overlay
+
+### 🎵 Audio Source Picker
+- **Interactive menu** — Arrow keys to select audio source
+- **PulseAudio/PipeWire** — Enumerate available sources
+- Launch with `--pick-source` flag
+
+### 🖥️ Terminal Capabilities Detection
+- **Sixel graphics** — Detect bitmap rendering support
+- **Kitty protocol** — Check for Kitty terminal graphics
+- **iTerm2 inline** — Detect iTerm2 image protocol
+- **True color** — Verify 24-bit color support
+- Launch with `--show-caps` flag
+
+### 📝 New Controls
+| Key | Action |
+|-----|--------|
+| `f` | Toggle background effects |
+| `e` | Cycle effect types (7 modes) |
+| `x` | Toggle frame recording |
+| `i` | Toggle performance profiler |
+
+### 📝 New CLI Flags
+| Flag | Description |
+|------|-------------|
+| `--pick-source` | Interactive audio source picker |
+| `--show-caps` | Display terminal capabilities |
+
+### 📄 Technical
+- New files: `src/export/frame_recorder.h/.c` (~200 lines)
+- New files: `src/audio/audio_picker.h/.c` (~180 lines)
+- New files: `src/ui/term_caps.h/.c` (~120 lines)
+- New files: `src/ui/profiler.h/.c` (~180 lines)
+- Updated: `src/main.c` (v3.0+ integration)
+- Updated: `Makefile` (V30P_SRCS variable)
+- Documentation: `docs/V3_FEATURES.md` comprehensive guide
+- Total new code: ~680 lines
+
+---
+
 ## 🚀 v3.0 - Big Audio Upgrade (January 2026)
 
 ### 🎯 Advanced BPM Tracker

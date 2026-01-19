@@ -12,7 +12,7 @@
 ![C](https://img.shields.io/badge/C-A8B9CC?style=flat&logo=c&logoColor=black)
 ![PipeWire](https://img.shields.io/badge/PipeWire-4A86CF?style=flat&logo=linux&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat)
-![Version](https://img.shields.io/badge/Version-3.0-blue?style=flat)
+![Version](https://img.shields.io/badge/Version-3.0.1-blue?style=flat)
 
 ```
     ⠀⣀⣀⠀
@@ -131,19 +131,39 @@ make
 | `-c, --config <file>` | Custom config file path |
 | `--no-ground` | Disable ground line |
 | `--no-shadow` | Disable shadow/reflection |
+| `--pick-source` | 🆕 Interactive audio source picker |
+| `--show-caps` | 🆕 Display terminal capabilities |
 
 ###  Runtime Controls
+
+**Core:**
 | Key | Action |
 |-----|--------|
-| `?` / `F1` | **Toggle help overlay** |
+| `?` / `F1` | Toggle help overlay |
 | `q` / `Esc` | Quit |
 | `+` / `-` | Adjust sensitivity |
 | `t` | Cycle color themes (13 available) |
+
+**Visual Toggles:**
+| Key | Action |
+|-----|--------|
 | `g` | Toggle ground line |
 | `r` | Toggle shadow/reflection |
 | `p` | Toggle particles |
 | `m` | Toggle motion trails |
 | `b` | Toggle breathing animation |
+
+**v3.0 Effects:**
+| Key | Action |
+|-----|--------|
+| `f` | Toggle background effects |
+| `e` | Cycle background effect types (7 modes) |
+
+**v3.0+ Pro Tools:**
+| Key | Action |
+|-----|--------|
+| `x` | Toggle frame recording (export mode) |
+| `i` | Toggle performance profiler overlay |
 
 ###  Color Themes (13 Available)
 
@@ -281,7 +301,8 @@ asciidancer/
 │   │   ├  common.c        # Shared audio utilities
 │   │   ├  rhythm.c        # Beat detection, BPM
 │   │   ├  bpm_tracker.c   # v3.0 Advanced BPM tracking
-│   │   └  energy_analyzer.c # v3.0 Dynamic energy analysis
+│   │   ├  energy_analyzer.c # v3.0 Dynamic energy analysis
+│   │   └  audio_picker.c  # v3.0+ Audio source picker
 │   ├  braille/
 │   │   ├  braille_canvas.c # Pixel-to-braille conversion
 │   │   ├  braille_dancer.c # Dancer integration
@@ -291,11 +312,15 @@ asciidancer/
 │   │   ├  trails.c        # Motion trails
 │   │   ├  effects.c       # Effects manager
 │   │   └  background_fx.c # v3.0 Background effects
+│   ├  export/
+│   │   └  frame_recorder.c # v3.0+ Frame capture for GIF/video
 │   ├  control/
 │   │   └  control_bus.c   # Unified audio signals
 │   ├  ui/
 │   │   ├  ui_reactive.c   # Reactive UI elements
-│   │   └  help_overlay.c  # Interactive help
+│   │   ├  help_overlay.c  # Interactive help
+│   │   ├  profiler.c      # v3.0+ Performance profiler
+│   │   └  term_caps.c     # v3.0+ Terminal capabilities
 │   ├  render/
 │   │   ├  render_new.c    # ncurses rendering
 │   │   └  colors.c        # 256-color themes
@@ -303,6 +328,8 @@ asciidancer/
 │   │   └  config.c        # INI config parser
 │   └  fft/
 │       └  cavacore.c      # FFT processing
+├  docs/
+│   └  V3_FEATURES.md      # v3.0+ Feature guide
 ├  README.md
 ├  CHANGELOG.md
 ├  ROADMAP.md

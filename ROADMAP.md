@@ -4,9 +4,9 @@ Development roadmap and feature tracking for asciidancer.
 
 ---
 
-##  Current Status: v3.0
+##  Current Status: v3.0.1
 
-**Rating: 9.9/10 — Advanced audio analysis with spectacular background effects
+**Rating: 9.5/10 — Advanced audio analysis with spectacular background effects
 
 ###  Completed Features
 - [x] 36 unique poses across 7 energy categories
@@ -33,11 +33,43 @@ Development roadmap and feature tracking for asciidancer.
 - [x] Enhanced particle repulsion system
 - [x] Interactive help overlay (? or F1 key)
 - [x] 13 color themes (6 new: aurora, sunset, ocean, candy, vapor, ember)
+- [x] Frame recording/export mode (X key)
+- [x] Performance profiler overlay (I key)
+- [x] Audio source picker menu (--pick-source)
+- [x] Terminal capabilities detection (--show-caps)
 
 ---
 
 
 ---
+
+
+##  v3.0.1 — Production Tools (COMPLETED)
+
+**Achieved: 9.9 → 9.5 (realistic)** | Released 2026-01-19
+
+### 🎬 Export & Recording
+- [x] Frame recorder with ANSI color preservation
+- [x] Timestamped recording directories
+- [x] GIF/video export workflow support
+
+### 📊 Performance Profiler
+- [x] Real-time FPS tracking (current/avg/min/max)
+- [x] Component timing breakdown (audio/update/render)
+- [x] Particle and trail count monitoring
+- [x] Visual performance bar (green/yellow/red zones)
+
+### 🎵 Audio Source Picker
+- [x] PulseAudio/PipeWire source enumeration
+- [x] Interactive selection menu
+- [x] --pick-source CLI flag
+
+### 🖥️ Terminal Detection
+- [x] Sixel graphics support detection
+- [x] Kitty protocol detection
+- [x] iTerm2 inline image detection
+- [x] True color (24-bit) verification
+- [x] --show-caps CLI flag
 
 ##  v3.0 — Big Audio Upgrade (COMPLETED)
 
