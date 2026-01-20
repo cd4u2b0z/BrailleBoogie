@@ -57,7 +57,8 @@ FRAME_SRCS = src/dancer/dancer_rhythm.c
 # Braille skeleton dancer (procedural with smooth interpolation)
 BRAILLE_SRCS = src/braille/braille_canvas.c \
                src/braille/skeleton_dancer.c \
-               src/braille/braille_dancer.c
+               src/braille/braille_dancer.c \
+               src/genres/genre_animations.c
 
 # Audio sources
 AUDIO_SRCS =
@@ -68,8 +69,8 @@ ifeq ($(UNAME_S),Darwin)
     LDFLAGS += -framework CoreAudio -framework AudioToolbox -framework CoreFoundation
     AUDIO_SRCS += src/audio/coreaudio.c
     # macOS may need explicit ncurses path
-    CFLAGS += -I/opt/homebrew/opt/ncurses/include -I/usr/local/opt/ncurses/include
-    LDFLAGS := $(filter-out -lncursesw,$(LDFLAGS)) -L/opt/homebrew/opt/ncurses/lib -L/usr/local/opt/ncurses/lib -lncursesw
+    CFLAGS += -I/opt/homebrew/opt/ncurses/include -I/usr/local/opt/ncurses/include -I/opt/homebrew/opt/fftw/include -I/usr/local/opt/fftw/include
+    LDFLAGS := $(filter-out -lncursesw,$(LDFLAGS)) -L/opt/homebrew/opt/ncurses/lib -L/usr/local/opt/ncurses/lib -L/opt/homebrew/opt/fftw/lib -L/usr/local/opt/fftw/lib -lncursesw
 else
     # Linux audio backends
     ifneq ($(PIPEWIRE_CFLAGS),)
